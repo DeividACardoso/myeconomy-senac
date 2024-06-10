@@ -11,6 +11,7 @@ import AppLink from "../../components/appLink/AppLink";
 import AppModal from "../../components/appModal/AppModal";
 import logo from "../../../assets/pass-gen.png";
 import { generatePassword } from "../../services/passwordService";
+import React from "react";
 
 export default function Home({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);

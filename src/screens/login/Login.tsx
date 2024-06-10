@@ -15,7 +15,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const handleLogin = () => {
         AuthService.login(username, password).then(
             () => {
-                navigation.navigate("Profile");
+                navigation.navigate("Home");
             },
             (error) => {
                 const resMessage =
