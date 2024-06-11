@@ -1,81 +1,152 @@
-import { View, Text } from "react-native";
-import { styles } from "./SignupStyle";
-import AppTitle from "../../components/appTitle/AppTitle";
-import AppInput from "../../components/appInput/AppInput";
-import AppButton from "../../components/appButton/AppButton";
-import AppLink from "../../components/appLink/AppLink";
-import { useMemo, useState } from "react";
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { signup } from '../../services/Auth/UserService';
 
-export default function Login({ navigation }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+interface SignupData {
+  name: string;
+  email: string;
+  password: string;
+  birthDate: string;
+}
 
-  const goToSignin = () => {
-    navigation.navigate("Signin");
+const Signup = ({ navigation }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [birthDate, setBirthDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleSignup = async () => {
+    if (password !== passwordConfirm) {
+      Alert.alert('Erro', 'As senhas não coincidem');
+      return;
+    }
+
+    try {
+      await signup({ name, email, password, birthDate: birthDate.toISOString().split('T')[0] });
+      navigation.navigate('Signin');
+    } catch (error) {
+      Alert.alert('Erro', error.message);
+    }
   };
 
-  const isValidForm = useMemo(() => {
-    return (
-      password === confirmPassword &&
-      !!name &&
-      !!email &&
-      !!password &&
-      confirmPassword
-    );
-  }, [name, email, password, confirmPassword]);
-
-  const register = async () => {
-    try {
-      navigation.navigate("Signin");
-    } catch (error) {
-      console.log(error);
-    }
+  const onChangeDate = (event, selectedDate) => {
+    const currentDate = selectedDate || birthDate;
+    setShowDatePicker(Platform.OS === 'ios');
+    setBirthDate(currentDate);
   };
 
   return (
     <View style={styles.container}>
-      <View>
-        <AppTitle text="Sign Up" />
-      </View>
-
-      <View style={styles.inputs}>
-        <View style={styles.field}>
-          <Text style={styles.label}>Nome</Text>
-          <AppInput setText={setName} text={name} inputField />
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>Email</Text>
-          <AppInput setText={setEmail} text={email} inputField />
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>Senha</Text>
-          <AppInput
-            isPassword
-            setText={setPassword}
-            text={password}
-            inputField
-          />
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>Confirmar Senha</Text>
-          <AppInput
-            setText={setConfirmPassword}
-            isPassword
-            text={confirmPassword}
-            inputField
-          />
-        </View>
-      </View>
-
-      <View style={styles.cta}>
-        <AppButton action={register} disabled={!isValidForm} text="REGISTRAR" />
-        <AppLink action={goToSignin} size="sm" text="Voltar" />
-      </View>
+      <Text style={styles.title}>CRIAR</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Nome"
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+      />
+      <TouchableOpacity style={styles.datepicker} onPress={() => setShowDatePicker(true)}>
+        <TextInput
+          style={styles.input}
+          placeholder="Data de nascimento"
+          value={birthDate.toISOString().split('T')[0]}
+          editable={false}
+          pointerEvents="none"
+        />
+      </TouchableOpacity>
+      {showDatePicker && (
+        <DateTimePicker
+          value={birthDate}
+          mode="date"
+          display="default"
+          onChange={onChangeDate}
+        />
+      )}
+      <TextInput
+        style={styles.input}
+        placeholder="Senha"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Confirmar senha"
+        value={passwordConfirm}
+        onChangeText={setPasswordConfirm}
+        secureTextEntry
+      />
+      <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        <Text style={styles.buttonText}>Criar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text style={styles.backText}>Voltar</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    width: '80%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingLeft: 8,
+    borderRadius: 5,
+  },
+  button: {
+    width: '80%',
+    height: 40,
+    backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginBottom: 12,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  message: {
+    marginTop: 12,
+    color: 'red',
+  },
+  link: {
+    marginTop: 12,
+    color: '#0000FF',
+    textDecorationLine: 'underline',
+  },
+  backText: {
+    textAlign: 'center',
+    color: 'gray',
+  },
+  datepicker:{
+    width: '100%',
+    alignItems: 'center'
+  },
+});
+
+export default Signup;

@@ -14,4 +14,7 @@ export const styles = StyleSheet.create({
   link: {
     marginTop: 8,
   },
+  buttons: {
+    backgroundColor: '#D6A72D'
+  }
 });

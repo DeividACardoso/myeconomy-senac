@@ -1,5 +1,6 @@
 import { Text } from "react-native";
 import { styles } from "./AppTitleStyle";
+import React from "react";
 
 interface AppTitle {
   text: string;

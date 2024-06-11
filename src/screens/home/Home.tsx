@@ -1,97 +1,90 @@
-import { useState, useEffect } from "react";
-import { View } from "react-native";
-import { styles } from "./HomeStyle";
-import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AppTitle from "../../components/appTitle/AppTitle";
-import AppImage from "../../components/appImage/AppImage";
-import AppInput from "../../components/appInput/AppInput";
-import AppButton from "../../components/appButton/AppButton";
-import AppLink from "../../components/appLink/AppLink";
-import AppModal from "../../components/appModal/AppModal";
-import logo from "../../../assets/pass-gen.png";
-import { generatePassword } from "../../services/passwordService";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { Alert, RefreshControl, ScrollView, View } from "react-native";
+import AppCard from "../../components/appCard/AppCard";
+import AppHeaderHome from "../../components/appHeaderHome/AppHeaderHome";
+// import AppProgressBar from "../../components/appProgressBar/AppProgressBar";
+import AppTextFormDate from "../../components/appTextForm/AppTextFormDate";
+// import { progressoMes } from "../../services/LimitService";
+// import { formatDate } from "../../utils/DateFormatter";
+import { styles } from "./HomeStyle";
 
 export default function Home({ navigation }) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwords, setPasswords] = useState([]);
+  const [nome, setNome] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [limite, setLimite] = useState(0);
+  const [despesa, setDespesa] = useState(0);
+  const [progresso, setProgresso] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [hasLimite, setHasLimite] = useState(true);
 
-  const goToHistory = () => {
-    navigation.navigate("History", { passwords });
-  };
+  // const onRefresh = () => {
+  //   setRefreshing(true);
+  //   fetchProgresso(date)
+  //     .then(() => setRefreshing(false));
+  // };
 
-  const setRandomPassword = async () => {
-    const newPassword = generatePassword();
-    setPassword(newPassword);
-  };
-
-  const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(password);
-  };
-
-  const getData = async () => {
-    try {
-      const response = await AsyncStorage.getItem("passwords");
-      return response ? JSON.parse(response) : [];
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const mountHome = async () => {
-    const result = await getData();
-
-    setPasswords(result);
-  };
-
-  const onCreatePassword = () => {
-    setModalVisible(false);
-    goToHistory();
-  };
+  // const fetchProgresso = async (data: Date) => {
+  //   const mes = formatDate(data)
+  //   await progressoMes(mes)
+  //     .then((response) => {
+  //       if (response.data != null) {
+  //         setDespesa(response.data.gasto);
+  //         setLimite(response.data.limite);
+  //         setProgresso(response.data.progresso);
+  //       } else {
+  //         // Alert.alert('Aviso', 'Não foram encontrados dados para o mês selecionado');
+  //         setHasLimite(false);
+  //         setDespesa(0);
+  //         setLimite(0);
+  //         setProgresso(0);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       Alert.alert('Erro', 'Erro ao buscar progresso');
+  //     });
+  // }
 
   useEffect(() => {
-    mountHome();
+    const retrieveNome = async () => {
+      try {
+        const value = await AsyncStorage.getItem('nome');
+        if (value) {
+          setNome(value);
+        }
+      } catch (error) {
+        console.error('Error retrieving nome from storage:', error);
+      }
+    };
+
+    retrieveNome();
   }, []);
 
+  const handleChangeDate = (data: Date) => {
+    setDate(data)
+    // fetchProgresso(data)
+  }
+
   return (
-    <View style={styles.container}>
-      {modalVisible && (
-        <AppModal
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          onConfirm={onCreatePassword}
-          password={password}
-        />
-      )}
-
-      <View>
-        <AppTitle text="Gerador de senha" />
+    <View style={[styles.container]}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 60 }}>
+        <AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} />
       </View>
-
-      <View>
-        <AppImage image={logo} />
-      </View>
-
-      <View style={styles.actions}>
-        <AppInput
-          text={password}
-          editable={false}
-          placeholder="GERE SUA SENHA"
-        />
-        <AppButton action={setRandomPassword} text="GERAR" />
-        <AppButton
-          disabled={!password}
-          action={() => setModalVisible(!modalVisible)}
-          text="SALVAR"
-        />
-        <AppButton action={copyToClipboard} text="COPIAR" />
-      </View>
-
-      <View style={styles.link}>
-        <AppLink action={goToHistory} text="Ver Senhas" />
-      </View>
+      <ScrollView
+        refreshControl={
+          // onRefresh={onRefresh}
+          <RefreshControl refreshing={refreshing}  />
+        }>
+        <View style={{ paddingHorizontal: 16 }}>
+          <View style={styles.buttons}>
+            <AppTextFormDate value={date} onChange={handleChangeDate} format='monthYear' />
+          </View>
+          <View style={{ paddingHorizontal: 16 }}>
+            <AppCard progressLevel={progresso} />
+            {/* <AppProgressBar despesa={despesa} limite={limite} hasLimite={hasLimite} progressLevel={progresso / 100}></AppProgressBar> */}
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
