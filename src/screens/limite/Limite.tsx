@@ -18,7 +18,7 @@ const meses = [
   "Setembro/2024", "Outubro/2024", "Novembro/2024", "Dezembro/2024"
 ];
 
-interface Despesa {
+interface Limite {
   valor: number;
   mes: string;
 }
@@ -37,48 +37,48 @@ export default function Limit({ navigation }: LimitProps) {
 
   const [valor, setValor] = useState<number | string>(0);
   const [mes, setMes] = useState<string>(meses[0]);
-  const [despesas, setDespesas] = useState<Despesa[]>([]);
+  const [limites, setLimites] = useState<Limite[]>([]);
 
   useEffect(() => {
-    const fetchDespesas = async () => {
+    const fetchLimites = async () => {
       try {
-        const data = await AsyncStorage.getItem('despesas');
+        const data = await AsyncStorage.getItem('limites');
         if (data) {
-          setDespesas(JSON.parse(data));
+          setLimite(JSON.parse(data));
         }
       } catch (error) {
-        console.error('Error retrieving despesas from storage:', error);
+        console.error('Error retrieving limites from storage:', error);
       }
     };
 
-    fetchDespesas();
+    fetchLimites();
   }, []);
 
   const handleSave = async () => {
     if (!valor || isNaN(Number(valor))) {
-      Alert.alert('Erro', 'Por favor, insira um valor válido.');
+      Alert.alert('Erro', 'Por favor, insira um limite válido.');
       return;
     }
 
-    const novaDespesa: Despesa = { valor: parseFloat(valor as string), mes };
-    const novasDespesas = [...despesas, novaDespesa];
+    const novoLimite: Limite = { valor: parseFloat(valor as string), mes };
+    const novosLimites = [...limites, novoLimite];
 
     try {
-      await AsyncStorage.setItem('despesas', JSON.stringify(novasDespesas));
-      setDespesas(novasDespesas);
+      await AsyncStorage.setItem('limite', JSON.stringify(novosLimites));
+      setLimites(novosLimites);
       setValor(0); // Reset to 0
-      Alert.alert('Sucesso', 'Despesa salva com sucesso.');
+      Alert.alert('Sucesso', 'Limite salvo com sucesso.');
     } catch (error) {
-      console.error('Error saving despesas:', error);
+      console.error('Erro salvando o limite:', error);
     }
   };
 
   const handleDelete = async (index: number) => {
-    const novasDespesas = despesas.filter((_, i) => i !== index);
+    const novasDespesas = limites.filter((_, i) => i !== index);
 
     try {
       await AsyncStorage.setItem('despesas', JSON.stringify(novasDespesas));
-      setDespesas(novasDespesas);
+      setLimites(novasDespesas);
       Alert.alert('Sucesso', 'Despesa excluída com sucesso.');
     } catch (error) {
       console.error('Error deleting despesa:', error);
@@ -86,7 +86,7 @@ export default function Limit({ navigation }: LimitProps) {
   };
 
   const handleEdit = (index: number) => {
-    const despesa = despesas[index];
+    const despesa = limites[index];
     setValor(despesa.valor.toString());
     setMes(despesa.mes);
     handleDelete(index);
@@ -94,9 +94,12 @@ export default function Limit({ navigation }: LimitProps) {
 
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 60 }}></View>
+      <Text style={styles.title}>Limite</Text>
+      {/* <View style={{ flexDirection: 'center', justifyContent: 'space-between', marginBottom: 100 }}></View> */}
+
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 60 }}></View>
       <Text style={styles.label}>Valor:</Text>
-      <AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} />
+      {/* <AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} /> */}
       <TextInput
         style={styles.input}
         value={valor.toString()}
@@ -105,10 +108,17 @@ export default function Limit({ navigation }: LimitProps) {
       />
 
       <Text style={styles.label}>Mês:</Text>
+      {/* <Picker>
+        {meses.map((mes, index) => (
+          <Picker.Item key={index} label={mes} value={mes} />
+          
+        ))} </Picker> */}
+        
+
       <Picker
-        selectedValue={mes}
-        style={styles.picker}
-        onValueChange={(itemValue) => setMes(itemValue)}
+        // selectedValue={mes}
+        // style={styles.picker}
+        // onValueChange={(itemValue) => setMes(itemValue)}
       >
         {meses.map((mes, index) => (
           <Picker.Item key={index} label={mes} value={mes} />
@@ -121,7 +131,7 @@ export default function Limit({ navigation }: LimitProps) {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        {despesas.map((despesa, index) => (
+        {limites.map((despesa, index) => (
           <View key={index} style={styles.despesaItem}>
             <Text style={styles.despesaText}>Mês: {despesa.mes} - Valor: R${despesa.valor.toFixed(2)}</Text>
             <View style={styles.buttonsContainer}>
