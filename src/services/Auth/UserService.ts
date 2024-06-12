@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-// const API_URL = "http://10.0.2.2:8080/api/auth/";
-const API_URL = "http://localhost:8080/api/auth/";
+const API_URL = "http://10.0.2.2:8080/api/auth/";
+// const API_URL = "http://localhost:8080/api/auth/";
 
 interface LoginResponse {
     token: string;
@@ -14,10 +14,10 @@ interface SignupResponse {
 }
 
 interface SignupData {
-    name: string;
-    email: string;
+    nome: string;
+    login: string;
     password: string;
-    birthDate: string;
+    dtNascimento: string;
 }
 
 const login = async (login: string, password: string): Promise<LoginResponse> => {
@@ -32,10 +32,8 @@ const login = async (login: string, password: string): Promise<LoginResponse> =>
 
 
 export const signup = async (signupData: SignupData): Promise<SignupResponse> => {
-    const response = await axios.post<SignupResponse>(API_URL + "signup", signupData);
-    if (response.data.token) {
-        await AsyncStorage.setItem("userToken", response.data.token);
-    }
+    console.log(signupData)
+    const response = await axios.post<SignupResponse>(API_URL + "register", signupData);
     return response.data;
 };
 

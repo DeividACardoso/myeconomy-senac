@@ -5,14 +5,14 @@ import { signup } from '../../services/Auth/UserService';
 
 interface SignupData {
   name: string;
-  email: string;
+  login: string;
   password: string;
   birthDate: string;
 }
 
 const Signup = ({ navigation }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [nome, setNome] = useState('');
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [birthDate, setBirthDate] = useState(new Date());
@@ -25,7 +25,7 @@ const Signup = ({ navigation }) => {
     }
 
     try {
-      await signup({ name, email, password, birthDate: birthDate.toISOString().split('T')[0] });
+      await signup({ login, nome, password, dtNascimento: birthDate.toISOString().split('T')[0] });
       navigation.navigate('Signin');
     } catch (error) {
       Alert.alert('Erro', error.message);
@@ -44,14 +44,14 @@ const Signup = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="Nome"
-        value={name}
-        onChangeText={setName}
+        value={nome}
+        onChangeText={setNome}
       />
       <TextInput
         style={styles.input}
         placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
+        value={login}
+        onChangeText={setLogin}
         keyboardType="email-address"
       />
       <TouchableOpacity style={styles.datepicker} onPress={() => setShowDatePicker(true)}>
