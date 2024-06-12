@@ -1,4 +1,4 @@
-import React from 'react';
+import React = require("react");
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from "./login/Login";
@@ -36,15 +36,15 @@ function MyTabs() {
                     ),
                 }}
             />
-            {/* <Tab.Screen
+            <Tab.Screen
                 name="Despesas"
-                component={Expense}
+                component={Limite}
                 options={{
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="wallet" color={color} size={size} />
                     ),
                 }}
-            /> */}
+            />
             <Tab.Screen
                 name="Limite"
                 component={Limite}

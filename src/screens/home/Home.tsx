@@ -1,13 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useCallback, useEffect, useState } from "react";
 import { Alert, RefreshControl, ScrollView, View } from "react-native";
 import AppCard from "../../components/appCard/AppCard";
 import AppHeaderHome from "../../components/appHeaderHome/AppHeaderHome";
 import AppProgressBar from "../../components/appProgressBar/AppProgressBar";
 import AppTextFormDate from "../../components/appTextForm/AppTextFormDate";
-import { progressoMes } from "../../services/LimitService";
+// import { progressoMes } from "../../services/LimitService";
+import { progressoMes } from "../../services/LimiteService";
 import { formatDate } from "../../utils/DateFormatter";
 import { styles } from "./HomeStyle";
+import { useCallback, useEffect, useState } from "react";
+import React = require("react");
 
 export default function Home({ navigation }) {
   const [nome, setNome] = useState("");
