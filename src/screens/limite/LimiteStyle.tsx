@@ -53,4 +53,7 @@ export const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
   },
+  buttons: {
+    backgroundColor: '#4CAF50'
+  }
 });

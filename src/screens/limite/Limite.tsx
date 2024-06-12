@@ -1,38 +1,42 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
-import { Alert, RefreshControl, ScrollView, View } from "react-native";
-// import { Alert, ScrollView, View, Text, TextInput, Button, Picker, TouchableOpacity } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import { Text } from "react-native-paper";
-import { TextInput } from "react-native/Libraries/Components/TextInput/TextInput";
+import { TextInput } from "react-native";
 import { Button } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
-import { DatePickerOptions } from "@react-native-community/datetimepicker";
 import { Picker } from '@react-native-picker/picker';
 import AppCard from "../../components/appCard/AppCard";
 import AppHeaderHome from "../../components/appHeaderHome/AppHeaderHome";
 import AppTextFormDate from "../../components/appTextForm/AppTextFormDate";
-import { formatDate } from "../../utils/DateFormatter";
-import { styles } from "./HomeStyle";
+import { styles } from "./LimiteStyle";
 
 const meses = [
-  "Janeiro/2024", "Fevereiro/2024", "Março/2024", "Abril/2024", 
-  "Maio/2024", "Junho/2024", "Julho/2024", "Agosto/2024", 
+  "Janeiro/2024", "Fevereiro/2024", "Março/2024", "Abril/2024",
+  "Maio/2024", "Junho/2024", "Julho/2024", "Agosto/2024",
   "Setembro/2024", "Outubro/2024", "Novembro/2024", "Dezembro/2024"
 ];
 
-export default function Limit({ navigation }) {
-  const [nome, setNome] = useState("");
-  const [date, setDate] = useState(new Date());
-  const [limite, setLimite] = useState(0);
-  const [despesa, setDespesa] = useState(0);
-  const [hasLimite, setHasLimite] = useState(true);
-  const [dinheiro, setDinheiro] = useState("");
+interface Despesa {
+  valor: number;
+  mes: string;
+}
 
-//   const [valor, setValor] = useState(Number);
-  const [valor, setValor] = useState(0);
-  const [texto, setTexto] = useState("");
-  const [mes, setMes] = useState(meses[0]);
-  const [despesas, setDespesas] = useState([]);
+interface LimitProps {
+  navigation: any;
+}
+
+export default function Limit({ navigation }: LimitProps) {
+  const [nome, setNome] = useState<string>("");
+  const [date, setDate] = useState<Date>(new Date());
+  const [limite, setLimite] = useState<number>(0);
+  const [despesa, setDespesa] = useState<number>(0);
+  const [hasLimite, setHasLimite] = useState<boolean>(true);
+  const [dinheiro, setDinheiro] = useState<string>("");
+
+  const [valor, setValor] = useState<number | string>(0);
+  const [mes, setMes] = useState<string>(meses[0]);
+  const [despesas, setDespesas] = useState<Despesa[]>([]);
 
   useEffect(() => {
     const fetchDespesas = async () => {
@@ -50,25 +54,25 @@ export default function Limit({ navigation }) {
   }, []);
 
   const handleSave = async () => {
-    if (!valor || isNaN(valor)) {
+    if (!valor || isNaN(Number(valor))) {
       Alert.alert('Erro', 'Por favor, insira um valor válido.');
       return;
     }
 
-    const novaDespesa = { valor: (valor), mes };
+    const novaDespesa: Despesa = { valor: parseFloat(valor as string), mes };
     const novasDespesas = [...despesas, novaDespesa];
 
     try {
       await AsyncStorage.setItem('despesas', JSON.stringify(novasDespesas));
       setDespesas(novasDespesas);
-      setValor(Number);
+      setValor(0); // Reset to 0
       Alert.alert('Sucesso', 'Despesa salva com sucesso.');
     } catch (error) {
       console.error('Error saving despesas:', error);
     }
   };
 
-  const handleDelete = async (index) => {
+  const handleDelete = async (index: number) => {
     const novasDespesas = despesas.filter((_, i) => i !== index);
 
     try {
@@ -80,7 +84,7 @@ export default function Limit({ navigation }) {
     }
   };
 
-  const handleEdit = (index) => {
+  const handleEdit = (index: number) => {
     const despesa = despesas[index];
     setValor(despesa.valor.toString());
     setMes(despesa.mes);
@@ -89,16 +93,16 @@ export default function Limit({ navigation }) {
 
   return (
     <View style={styles.container}>
-       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 60 }}></View>
-        <Text style={styles.label}>Valor:</Text>
-          <AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} />
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 60 }}></View>
+      <Text style={styles.label}>Valor:</Text>
+      <AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} />
       <TextInput
         style={styles.input}
-        value={texto}
-        onChangeText={setTexto}
+        value={valor.toString()}
+        onChangeText={(text) => setValor(parseFloat(text) || 0)}
         keyboardType="numeric"
       />
-      
+
       <Text style={styles.label}>Mês:</Text>
       <Picker
         selectedValue={mes}
@@ -110,22 +114,22 @@ export default function Limit({ navigation }) {
         ))}
       </Picker>
 
-      {/* <Button title="Salvar" onPress={handleSave} /> */}
-        <View style={styles.buttons}>
-            <AppTextFormDate value={date} onChange={handleSave} format='monthYear' />
-        </View>
+      <View style={styles.buttons}>
+        <AppTextFormDate value={date} onChange={setDate} format='monthYear' />
+        <Button onPress={handleSave} mode="contained">Salvar</Button>
+      </View>
 
       <ScrollView style={styles.scrollView}>
         {despesas.map((despesa, index) => (
           <View key={index} style={styles.despesaItem}>
             <Text style={styles.despesaText}>Mês: {despesa.mes} - Valor: R${despesa.valor.toFixed(2)}</Text>
             <View style={styles.buttonsContainer}>
-              {/* <TouchableOpacity onPress={() => handleEdit(index)} style={styles.buttonEdit}>
+              <TouchableOpacity onPress={() => handleEdit(index)} style={styles.buttonEdit}>
                 <Text style={styles.buttonText}>Editar</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDelete(index)} style={styles.buttonDelete}>
                 <Text style={styles.buttonText}>Excluir</Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
           </View>
         ))}

@@ -5,7 +5,7 @@ import LoginScreen from "./login/Login";
 import Signup from "./signup/Signup";
 import Home from "./home/Home";
 // import Expense from "./expense/Expense";
-// import Limit from "./limit/Limit";
+import Limite from "./limite/Limite";
 // import Profile from "./profile/Profile";
 import { Ionicons } from '@expo/vector-icons';
 // import ExpenseHistory from './expense/ExpenseHistory';
@@ -45,15 +45,15 @@ function MyTabs() {
                     ),
                 }}
             /> */}
-            {/* <Tab.Screen
+            <Tab.Screen
                 name="Limite"
-                component={Limit}
+                component={Limite}
                 options={{
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="calendar" color={color} size={size} />
                     ),
                 }}
-            /> */}
+            />
         </Tab.Navigator>
     );
 }
