@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Alert, ScrollView, View } from "react-native";
 import { Text } from "react-native-paper";
 import { TextInput } from "react-native";
@@ -10,6 +10,7 @@ import AppCard from "../../components/appCard/AppCard";
 import AppHeaderHome from "../../components/appHeaderHome/AppHeaderHome";
 import AppTextFormDate from "../../components/appTextForm/AppTextFormDate";
 import { styles } from "./LimiteStyle";
+import React = require("react");
 
 const meses = [
   "Janeiro/2024", "Fevereiro/2024", "Março/2024", "Abril/2024",
