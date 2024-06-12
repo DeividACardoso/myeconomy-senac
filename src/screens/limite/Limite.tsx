@@ -10,7 +10,7 @@ import AppCard from "../../components/appCard/AppCard";
 import AppHeaderHome from "../../components/appHeaderHome/AppHeaderHome";
 import AppTextFormDate from "../../components/appTextForm/AppTextFormDate";
 import { styles } from "./LimiteStyle";
-import React = require("react");
+import React from "react";
 
 const meses = [
   "Janeiro/2024", "Fevereiro/2024", "Março/2024", "Abril/2024",
