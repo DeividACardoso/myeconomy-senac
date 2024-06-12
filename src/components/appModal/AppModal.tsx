@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generatePassword } from "../../services/passwordService";
 import uuid from "react-native-uuid";
 import { useMemo, useState } from "react";
+import React from "react";
 
 interface AppModal {
   modalVisible: boolean;

@@ -2,6 +2,7 @@ import { View, Text, Image } from "react-native";
 import { styles } from "./AppItemStyle";
 import * as Clipboard from "expo-clipboard";
 import { useMemo } from "react";
+import React from "react";
 
 interface AppInputProps {
   text?: string;

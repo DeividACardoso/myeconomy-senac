@@ -10,18 +10,18 @@ interface Props {
 }
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-    const [username, setUsername] = useState<string>("");
+    const [login, setLogin] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [message, setMessage] = useState<string>("");
 
     const handleLogin = () => {
-        AuthService.login(username, password).then(
+        AuthService.login(login, password).then(
             async () => {
                 try {
-                    await AsyncStorage.setItem('nome', username); // Store username
+                    await AsyncStorage.setItem('login', login);
                     navigation.navigate('Home');
                 } catch (error) {
-                    console.error('Error storing nome in storage:', error);
+                    console.error('Error storing login in storage:', error);
                 }
                 navigation.navigate('Home');
             },
@@ -45,8 +45,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             <TextInput
                 style={styles.input}
                 placeholder="Email"
-                onChangeText={(text) => setUsername(text)}
-                value={username}
+                onChangeText={(text) => setLogin(text)}
+                value={login}
             />
             <TextInput
                 style={styles.input}

@@ -3,13 +3,6 @@ import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Pla
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { signup } from '../../services/Auth/UserService';
 
-interface SignupData {
-  name: string;
-  login: string;
-  password: string;
-  birthDate: string;
-}
-
 const Signup = ({ navigation }) => {
   const [nome, setNome] = useState('');
   const [login, setLogin] = useState('');
@@ -17,10 +10,32 @@ const Signup = ({ navigation }) => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [birthDate, setBirthDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSignup = async () => {
+    // Reset error message
+    setErrorMessage('');
+
+    // Validate fields
+    if (!nome) {
+      setErrorMessage('O campo Nome é obrigatório.');
+      return;
+    }
+    if (!login) {
+      setErrorMessage('O campo Email é obrigatório.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(login)) {
+      setErrorMessage('Formato de Email inválido.');
+      return;
+    }
+    if (!password) {
+      setErrorMessage('O campo Senha é obrigatório.');
+      return;
+    }
     if (password !== passwordConfirm) {
-      Alert.alert('Erro', 'As senhas não coincidem');
+      setErrorMessage('As senhas não coincidem.');
       return;
     }
 
@@ -28,7 +43,7 @@ const Signup = ({ navigation }) => {
       await signup({ login, nome, password, dtNascimento: birthDate.toISOString().split('T')[0] });
       navigation.navigate('Signin');
     } catch (error) {
-      Alert.alert('Erro', error.message);
+      setErrorMessage(error.message);
     }
   };
 
@@ -85,6 +100,7 @@ const Signup = ({ navigation }) => {
         onChangeText={setPasswordConfirm}
         secureTextEntry
       />
+      {errorMessage ? <Text style={styles.message}>{errorMessage}</Text> : null}
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Criar</Text>
       </TouchableOpacity>
