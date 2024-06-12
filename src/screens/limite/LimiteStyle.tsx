@@ -3,9 +3,11 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
     padding: 16,
     backgroundColor: '#fff',
-  },
+},
   label: {
     fontSize: 18,
     marginBottom: 8,
@@ -55,5 +57,11 @@ export const styles = StyleSheet.create({
   },
   buttons: {
     backgroundColor: '#4CAF50'
-  }
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    justifyContent: 'center',
+    marginBottom: 20,
+},
 });
