@@ -1,5 +1,6 @@
 import { GestureResponderEvent, Pressable, Text } from "react-native";
 import { styles } from "./AppLinkStyle";
+import React from "react";
 
 interface AppLinkProps {
   text: string;

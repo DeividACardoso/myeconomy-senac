@@ -1,5 +1,6 @@
 import { GestureResponderEvent, Pressable, Text } from "react-native";
 import { styles } from "./AppModalButtonStyle";
+import React from "react";
 
 interface AppButtonProps {
   text: string;

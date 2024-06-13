@@ -1,12 +1,12 @@
-import React = require("react");
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from "./login/Login";
 import Signup from "./signup/Signup";
 import Home from "./home/Home";
+import React from "react";
 // import Expense from "./expense/Expense";
 import Limite from "./limite/Limite";
-// import Profile from "./profile/Profile";
+import Perfil from "./profile/Profile";
 import { Ionicons } from '@expo/vector-icons';
 // import ExpenseHistory from './expense/ExpenseHistory';
 // import LimitHistory from './limit/LimitHistory';
@@ -46,6 +46,15 @@ function MyTabs() {
                 }}
             />
             <Tab.Screen
+                name="Perfil"
+                component={Perfil}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="calendar" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tab.Screen
                 name="Limite"
                 component={Limite}
                 options={{
@@ -71,7 +80,7 @@ export default function AppNavigation() {
                 name="Signup"
                 component={Signup}
                 options={{
-                    title: "",
+                    title: "Cadastro",
                     headerStyle: {
                         backgroundColor: 'white'
                     },
@@ -83,7 +92,7 @@ export default function AppNavigation() {
                 name="Home"
                 component={MyTabs}
                 options={{
-                    title: "",
+                    title: "Home",
                     headerStyle: {
                         backgroundColor: 'white'
                     },
@@ -92,19 +101,19 @@ export default function AppNavigation() {
                     headerLeft: () => false
                 }}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
                 name="Profile"
-                component={Profile}
+                component={Perfil}
                 options={{
-                    title: "",
+                    title: "Perfil",
                     headerStyle: {
                         backgroundColor: 'white'
                     },
-                    headerTintColor: #4CAF50,
+                    headerTintColor: '#4CAF50',
                     headerShadowVisible: false,
                 }}
             />
-            <Stack.Screen
+            {/* <Stack.Screen
                 name="ExpenseHistory"
                 component={ExpenseHistory}
                 options={{
@@ -115,8 +124,8 @@ export default function AppNavigation() {
                     headerTintColor: #4CAF50,
                     headerShadowVisible: false,
                 }}
-            />
-            <Stack.Screen
+            /> */}
+            {/* <Stack.Screen
                 name="LimitHistory"
                 component={LimitHistory}
                 options={{
