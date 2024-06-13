@@ -80,14 +80,14 @@ export default function Limit({ navigation }: LimitProps) {
   };
 
   const handleDelete = async (index: number) => {
-    const novasDespesas = limites.filter((_, i) => i !== index);
+    const novosLimites = limites.filter((_, i) => i !== index);
 
     try {
-      await AsyncStorage.setItem("despesas", JSON.stringify(novasDespesas));
-      setLimites(novasDespesas);
-      Alert.alert("Sucesso", "Despesa excluída com sucesso.");
+      await AsyncStorage.setItem("limites", JSON.stringify(novosLimites));
+      setLimites(novosLimites);
+      Alert.alert("Sucesso", "Limite excluído com sucesso.");
     } catch (error) {
-      console.error("Error deleting despesa:", error);
+      console.error("Erro ao deletar o limite:", error);
     }
   };
 
@@ -118,6 +118,7 @@ export default function Limit({ navigation }: LimitProps) {
         keyboardType="numeric"
       />
       <Text style={styles.label}>Mês:</Text>
+
       <Picker
         selectedValue={mes}
         style={styles.picker}
@@ -128,21 +129,23 @@ export default function Limit({ navigation }: LimitProps) {
         ))}
       </Picker>
 
-      <View style={styles.buttons}>
-        <AppTextFormDate value={date} onChange={setDate} format="monthYear" />
-        <Button onPress={handleSave} mode="contained">
-          Salvar
-        </Button>
-      </View>
+      {/* <View style={styles.button}>
+        <Button onPress={handleSave}mode="contained">S</Button>
+        <Text style={styles.buttonText}>Salvar</Text>
+      </View> */}
+
+      <TouchableOpacity style={styles.button} onPress={handleSave}>
+        <Text style={styles.buttonText}>Salvar</Text>
+      </TouchableOpacity>
 
       <ScrollView style={styles.scrollView}>
         {limites.map((despesa, index) => (
           <View key={index} style={styles.despesaItem}>
             <Text style={styles.despesaText}>
-              Mês: {despesa.mes} - Valor: R${despesa.valor.toFixed(2)}
+              Mês: {despesa.mes} - Valor: R${despesa.valor.toFixed(1)}
             </Text>
             <View style={styles.buttonsContainer}>
-              <TouchableOpacity
+              <TouchableOpacity 
                 onPress={() => handleEdit(index)}
                 style={styles.buttonEdit}
               >

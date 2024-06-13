@@ -50,7 +50,7 @@ function MyTabs() {
                 component={Perfil}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="calendar" color={color} size={size} />
+                        <Ionicons name="person" color={color} size={size} />
                     ),
                 }}
             />

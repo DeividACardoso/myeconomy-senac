@@ -54,14 +54,27 @@ export const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
+    fontSize: 16
   },
-  buttons: {
-    backgroundColor: "#4CAF50",
+  button: {
+    width: '100%',
+    height: 40,
+    // backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginBottom: 12,
+    // flex: 1,
+    // textAlign: 'center'
+   backgroundColor:'#4CAF50',
+   
   },
   title: {
     fontSize: 40,
     fontWeight: "bold",
-    justifyContent: "center",
     marginBottom: 20,
+    alignItems: 'center',
+    flex: 1,
+    textAlign: 'center'
   },
 });
