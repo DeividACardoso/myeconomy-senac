@@ -1,13 +1,13 @@
+// AppProgressBar.js
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
-import { styles } from './AppProgressBarStyle';
 
 const AppProgressBar = ({ despesa, limite, hasLimite, progressLevel }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Progresso</Text>
-      <ProgressBar progress={progressLevel} color={'#4CAF50'} />
+      <ProgressBar progress={progressLevel} color={'#4CAF50'} style={styles.progressBar} />
       {hasLimite && (
         <Text style={styles.text}>
           Progresso: R${despesa.toFixed(2)}/R${limite.toFixed(2)}
@@ -16,5 +16,20 @@ const AppProgressBar = ({ despesa, limite, hasLimite, progressLevel }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 16,
+  },
+  text: {
+    fontSize: 16,
+    color: '#000',
+    marginVertical: 8,
+  },
+  progressBar: {
+    height: 10,
+    borderRadius: 5,
+  },
+});
 
 export default AppProgressBar;
