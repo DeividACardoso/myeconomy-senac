@@ -1,8 +1,8 @@
-import { Pressable, View } from "react-native";
-import { styles } from "./AppCardStyle";
-import React from "react";
-import { Avatar, Button, Card, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
+import React from "react";
+import { View } from "react-native";
+import { Card, Text } from 'react-native-paper';
+import { styles } from "./AppCardStyle";
 
 interface AppCardProps {
     progressLevel: number;
@@ -17,11 +17,11 @@ function getEmojiAndText(progressLevel: number): EmojiAndText {
     if (progressLevel >= 0 && progressLevel <= 24) {
         return { emoji: "😴", text: "Progresso muito baixo" };
     } else if (progressLevel >= 25 && progressLevel <= 49) {
-        return { emoji: "🤩", text: "Seu progresso está excelente, continue assim!" };
+        return { emoji: "🤩", text: "Seu progresso está excelente!" };
     } else if (progressLevel >= 50 && progressLevel <= 74) {
         return { emoji: "🙂", text: "Continue assim!" };
     } else if (progressLevel >= 75 && progressLevel <= 99) {
-        return { emoji: "🥴", text: "Cuidado, seu limite está muito alto!" };
+        return { emoji: "🥴", text: "Cuidado com seu limite!" };
     } else {
         return { emoji: "😓", text: "Objetivo não atingido!" };
     }
@@ -30,15 +30,15 @@ function getEmojiAndText(progressLevel: number): EmojiAndText {
 export default function AppCard({ progressLevel }: AppCardProps) {
     let gradientColors;
     if (progressLevel >= 0 && progressLevel <= 24) {
-        gradientColors = ['#2CB5CF', '#A8EFFF'];
+        gradientColors = ['#00FF00', '#00CC00'];
     } else if (progressLevel >= 25 && progressLevel <= 49) {
-        gradientColors = ['#22CF3D', '#5FFF3F'];
+        gradientColors = ['#00CC00', '#009900'];
     } else if (progressLevel >= 50 && progressLevel <= 74) {
-        gradientColors = ['#D6A72D', '#E6E94D'];
+        gradientColors = ['#009900', '#006600'];
     } else if (progressLevel >= 75 && progressLevel <= 99) {
-        gradientColors = ['#D6A72D', '#E01F1F'];
+        gradientColors = ['#006600', '#003300'];
     } else {
-        gradientColors = ['#4A0606','#690707'];
+        gradientColors = ['#003300','#000000'];
     }
 
     const { emoji, text } = getEmojiAndText(progressLevel);
