@@ -54,7 +54,7 @@ export default function Home({ navigation }) {
           setNome(value);
         }
       } catch (error) {
-        console.error('Error retrieving nome from storage:', error);
+        console.error('Erro: resgatando do AsyncStorage:', error);
       }
     };
 

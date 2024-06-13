@@ -27,7 +27,11 @@ const login = async (login: string, password: string): Promise<LoginResponse> =>
     setIsSignedIn(true);
     if (response.data.token) {
         await AsyncStorage.setItem("userToken", response.data.token);
+    }
+    if(response.data.nome != null || response.data.nome != undefined){
         await AsyncStorage.setItem("nome", response.data.nome);
+    }
+    if(response.data.dtNascimento != null || response.data.dtNascimento != undefined){
         await AsyncStorage.setItem("dtNascimento", response.data.dtNascimento);
     }
     return response.data;
