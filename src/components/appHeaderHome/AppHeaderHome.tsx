@@ -26,21 +26,6 @@ export default function AppHeaderHome({ nome, avatar, route, navigation, showAva
                 <AppTitleMain text={`Olá, ${nome} 👋`}/>
                 <AppSubtitle text={"É bom te ver por aqui!"}  />
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    {showAvatar && (
-                        <View style={{
-                            width: 50, height: 50, borderRadius: 25, backgroundColor: 'white',
-                            justifyContent: 'center', alignItems: 'center'
-                        }}>
-                            <Image
-                                source={avatar}
-                                style={styles.image}
-                            />
-                        </View>
-                    )}
-                </TouchableOpacity>
-            </View>
         </View>
     );
 };

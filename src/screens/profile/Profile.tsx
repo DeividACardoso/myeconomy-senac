@@ -50,8 +50,8 @@ const Profile = () => {
     }
 
     return (
-        <View style={[styles.container]}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 40 }}>
+        <View style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
+            <View style={styles.header}>
                 <AppHeader nome="Meus Dados" showAvatar={false} />
             </View>
             <View style={styles.labelContainer}>

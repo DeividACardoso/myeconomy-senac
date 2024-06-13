@@ -4,23 +4,23 @@ export const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "center",
     },
     labelContainer: {
-        alignSelf: "stretch",
-        paddingStart: "10%",
+        alignSelf: "center",
     },
     label: {
         color: "black",
         fontSize: 16,
         marginBottom: 10,
-        textAlign: "left",
-        alignSelf: "flex-start",
+        textAlign: "center",
+        alignSelf: "center",
     },
     buttons: {
         width: "80%",
         gap: 6,
         alignItems: "center",
+        alignSelf: "center",
         paddingBottom: 20,
     },
     margin: {
@@ -28,5 +28,14 @@ export const styles = StyleSheet.create({
     },
     errorText: {
         color: 'red'
-    }
+    },
+    header: { position: "absolute", 
+    top: 0, 
+    width: "100%", 
+    alignItems: "center", 
+    justifyContent: "center", 
+    backgroundColor: "white", 
+    height: 50, 
+    zIndex: 1, },
+
 });
