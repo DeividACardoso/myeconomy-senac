@@ -9,7 +9,7 @@ import { progressoMes } from "../../services/LimiteService";
 import { formatDate } from "../../utils/DateFormatter";
 import { styles } from "./HomeStyle";
 import { useCallback, useEffect, useState } from "react";
-import React = require("react");
+import React from "react";
 
 export default function Home({ navigation }) {
   const [nome, setNome] = useState("");
