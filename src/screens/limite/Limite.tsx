@@ -14,18 +14,8 @@ import React from "react";
 import axios from "axios";
 
 const meses = [
-  "Janeiro/2024",
-  "Fevereiro/2024",
-  "Março/2024",
-  "Abril/2024",
-  "Maio/2024",
-  "Junho/2024",
-  "Julho/2024",
-  "Agosto/2024",
-  "Setembro/2024",
-  "Outubro/2024",
-  "Novembro/2024",
-  "Dezembro/2024",
+  "Janeiro/2024","Fevereiro/2024", "Março/2024", "Abril/2024","Maio/2024", "Junho/2024","Julho/2024",
+  "Agosto/2024","Setembro/2024","Outubro/2024","Novembro/2024", "Dezembro/2024",
 ];
 
 interface Limite {
@@ -39,10 +29,8 @@ interface LimitProps {
 }
 
 export default function Limit({ navigation }: LimitProps) {
-  const [date, setDate] = useState<Date>(new Date());
   const [limite, setLimite] = useState<number>(0);
   const [hasLimite, setHasLimite] = useState<boolean>(true);
-  const [dinheiro, setDinheiro] = useState<string>("");
   const [nextId, setNextId] = useState<number>(0);
   const [resultados, setResultados] = useState<Limite[]>([]);
   const [editId, setEditId] = useState<number | null>(null);
@@ -71,8 +59,12 @@ export default function Limit({ navigation }: LimitProps) {
       Alert.alert("Erro", "Por favor, insira um limite válido.");
       return;
     }
+    if (mes.length === 0) {
+      Alert.alert("Erro", "Por favor, selecione pelo menos um mês.");
+      return;
+    }
 
-    const novoLimite: Limite = {id: nextId, valor: parseFloat(valor as string), mes };
+    const novoLimite: Limite = { id: nextId, valor: parseFloat(valor as string), mes };
     const novosLimites = [...limites, novoLimite];
 
     try {
@@ -97,33 +89,33 @@ export default function Limit({ navigation }: LimitProps) {
     }
   };
 
-//   const handleDelete = async (id: number) => {
-//     try {      
-//         await axios.delete(`http://10.0.2.2:8080/api/limite-mes/delete/${id}`);
-//         const novosLimites = limites.filter((limite) => limite.id !== id);
-//         await AsyncStorage.setItem("limites", JSON.stringify(novosLimites));
-//         setLimites(novosLimites);
-//         Alert.alert("Sucesso", "Limite excluído com sucesso.");
-//     } catch (error) {
-//         console.error("Erro ao deletar o limite:", error);
-//         Alert.alert("Erro", "Não foi possível excluir o limite.");
-//     }
-// };
+  //   const handleDelete = async (id: number) => {
+  //     try {      
+  //         await axios.delete(`http://10.0.2.2:8080/api/limite-mes/delete/${id}`);
+  //         const novosLimites = limites.filter((limite) => limite.id !== id);
+  //         await AsyncStorage.setItem("limites", JSON.stringify(novosLimites));
+  //         setLimites(novosLimites);
+  //         Alert.alert("Sucesso", "Limite excluído com sucesso.");
+  //     } catch (error) {
+  //         console.error("Erro ao deletar o limite:", error);
+  //         Alert.alert("Erro", "Não foi possível excluir o limite.");
+  //     }
+  // };
 
   const handleEdit = (id: number) => {
     const limite = limites.find(l => l.id === id);
     if (limite) {
-        setValor(limite.valor.toString());
-        setMes(limite.mes);
-        setEditId(limite.id);
+      setValor(limite.valor.toString());
+      setMes(limite.mes);
+      setEditId(limite.id);
     }
   };
   const handleSearch = () => {
-    const results = limites.filter(limite => 
-      limite.mes.includes(searchTerm) || 
+    const results = limites.filter(limite =>
+      limite.mes.includes(searchTerm) ||
       limite.valor.toString().includes(searchTerm)
-  );
-  setResultados(results);
+    );
+    setResultados(results);
   };
 
 
@@ -156,11 +148,11 @@ export default function Limit({ navigation }: LimitProps) {
           <Picker.Item key={mes} label={mes} value={mes} />
         ))}
       </Picker>
-     
+
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Salvar</Text>
       </TouchableOpacity>
-          <View></View> 
+      <View></View>
       <TouchableOpacity style={styles.buttonPesquisa} onPress={handleSearch}>
         <Text style={styles.buttonText}>Pesquisar</Text>
       </TouchableOpacity>
@@ -172,7 +164,7 @@ export default function Limit({ navigation }: LimitProps) {
               Mês: {despesa.mes} - Valor: R${despesa.valor.toFixed(1)}
             </Text>
             <View style={styles.buttonsContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => handleEdit(index)}
                 style={styles.buttonEdit}
               >
@@ -185,14 +177,14 @@ export default function Limit({ navigation }: LimitProps) {
                 <Text style={styles.buttonText}>Excluir</Text>
               </TouchableOpacity>
 
-              
+
             </View>
           </View>
-          
+
         ))}
       </ScrollView>
-      
+
     </View>
   );
-  
+
 }

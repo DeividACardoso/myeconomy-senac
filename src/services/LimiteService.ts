@@ -17,7 +17,7 @@ export const getLimites = async () => {
     const response = await axiosInstance.get(`${API_URL}/todos`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching limites:', error);
+    console.error('Erro ao buscar limites:', error);
     throw error;
   }
 };
@@ -27,17 +27,17 @@ export const getLimiteByMes = async (mes: string) => {
     const response = await axiosInstance.get(`${API_URL}/mes/${mes}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching limite by mes:', error);
+    console.error('Erro ao buscar o limite por mes:', error);
     throw error;
   }
 };
 
 export const createLimite = async (limite: { valor: number; mes: string }) => {
   try {
-    const response = await axiosInstance.post(API_URL+'limite', limite);
+    const response = await axiosInstance.post(`${API_URL}/salvar}`, limite);
     return response.data;
   } catch (error) {
-    console.error('Error creating limite:', error);
+    console.error('Erro criando o limite:', error);
     throw error;
   }
 };
@@ -47,7 +47,7 @@ export const updateLimite = async (id: number, limite: { valor: number; mes: str
     const response = await axiosInstance.put(`${API_URL}/${id}`, limite);
     return response.data;
   } catch (error) {
-    console.error('Error updating limite:', error);
+    console.error('Erro atualizando limite:', error);
     throw error;
   }
 };
@@ -57,7 +57,7 @@ export const deleteLimite = async (id: number) => {
     const response = await axiosInstance.delete(`${API_URL}/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Error deleting limite:', error);
+    console.error('Erro deletando limite:', error);
     throw error;
   }
 };
