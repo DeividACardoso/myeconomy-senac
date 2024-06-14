@@ -12,39 +12,40 @@ const Signup = ({ navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSignup = async () => {
-    // Reset error message
-    setErrorMessage('');
-
-    // Validate fields
-    if (!nome) {
-      setErrorMessage('O campo Nome é obrigatório.');
-      return;
-    }
-    if (!login) {
-      setErrorMessage('O campo Email é obrigatório.');
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(login)) {
-      setErrorMessage('Formato de Email inválido.');
-      return;
-    }
-    if (!password) {
-      setErrorMessage('O campo Senha é obrigatório.');
-      return;
-    }
-    if (password !== passwordConfirm) {
-      setErrorMessage('As senhas não coincidem.');
-      return;
-    }
-
-    try {
-      await signup({ login, nome, password, dtNascimento: birthDate.toISOString().split('T')[0] });
-      navigation.navigate('Signin');
-    } catch (error) {
-      setErrorMessage(error.message);
-    }
+    const handleSignup = async () => {
+      // Reset error message
+      setErrorMessage('');
+    
+      // Validate fields
+      if (!nome) {
+        setErrorMessage('O campo Nome é obrigatório.');
+        return;
+      }
+      if (!login) {
+        setErrorMessage('O campo Email é obrigatório.');
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(login)) {
+        setErrorMessage('Formato de Email inválido.');
+        return;
+      }
+      if (!password) {
+        setErrorMessage('O campo Senha é obrigatório.');
+        return;
+      }
+      if (password !== passwordConfirm) {
+        setErrorMessage('As senhas não coincidem.');
+        return;
+      }
+    
+      const currentDate = new Date();
+      const age = currentDate.getFullYear() - birthDate.getFullYear();
+    
+      if (age < 13) {
+        setErrorMessage('Você precisa ter pelo menos 13 anos para usar o aplicativo.');
+        return;
+      }
   };
 
   const onChangeDate = (event, selectedDate) => {

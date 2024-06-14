@@ -8,6 +8,7 @@ import React from "react";
 import Limite from "./limite/Limite";
 import Perfil from "./profile/Profile";
 import { Ionicons } from '@expo/vector-icons';
+import DespesaScreen from "./despesa/Despesa";
 // import ExpenseHistory from './expense/ExpenseHistory';
 // import LimitHistory from './limit/LimitHistory';
 
@@ -38,7 +39,7 @@ function MyTabs() {
             />
             <Tab.Screen
                 name="Despesas"
-                component={Limite}
+                component={DespesaScreen}
                 options={{
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="wallet" color={color} size={size} />
