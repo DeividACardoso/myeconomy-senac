@@ -2,7 +2,8 @@ import axios from 'axios';
 import axiosInstance from '../utils/RequestInterceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_BASE_URL = 'http://localhost:8080/api/despesas';
+const API_BASE_URL = "http://10.0.2.2:8080/api/despesas";
+// const API_BASE_URL = 'http://localhost:8080/api/despesas';
 
 export const create = async (despesaData: any): Promise<any> => {
     try {
@@ -18,13 +19,7 @@ export const create = async (despesaData: any): Promise<any> => {
 
         const bodyString = JSON.stringify(body);
 
-        const response = await axiosInstance.post(`${API_BASE_URL}/salvar`, body, {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-            }
-        });
+        const response = await axiosInstance.post(`${API_BASE_URL}/salvar`, body,);
         return response.data;
     } catch (error) {
         throw new Error('Erro ao criar despesa. Erro: ', error);
@@ -53,13 +48,7 @@ export const remove = async (despesaId: number) => {
 
 export const get = async (despesaId: string): Promise<any> => {
     try {
-        const response = await axiosInstance.get(`${API_BASE_URL}/${despesaId}`, {
-            headers: {
-                'Access-Control-Allow-Origin': '',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-            }
-        });
+        const response = await axiosInstance.get(`${API_BASE_URL}/${despesaId}`);
         return response.data;
     } catch (error) {
         throw new Error('Erro ao obter despesa');
@@ -68,15 +57,7 @@ export const get = async (despesaId: string): Promise<any> => {
 
 export const getByLogin = async (usuario_email: string): Promise<any[]> => {
     try {
-        console.log(API_BASE_URL, usuario_email);
-        const response = await axiosInstance.get(`${API_BASE_URL}/${usuario_email}`, {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-            }
-        });
-        console.log(response.data);
+        const response = await axiosInstance.get(`${API_BASE_URL}/${usuario_email}`);
         return response.data;
     } catch (error) {
         throw new Error('Erro ao obter despesa por email');
