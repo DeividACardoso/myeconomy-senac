@@ -110,9 +110,11 @@ const DespesaScreen = () => {
             </TouchableOpacity>
             <Text style={styles.historyTitle}>Histórico</Text>
 
+        
             <FlatList
                 data={expenses}
                 keyExtractor={(item) => item.id}
+                ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma despesa encontrada</Text>}
                 renderItem={({ item }) => (
                     <View style={styles.expenseItem}>
                         <Text style={styles.expenseText}>{item.descricao} Valor: R${item.gasto}</Text>
@@ -192,6 +194,10 @@ const styles = StyleSheet.create({
     actionButtonText: {
         fontSize: 16,
     },
+    emptyText: {
+        textAlign: 'center',
+        fontSize: 16,
+    }
 });
 
 export default DespesaScreen;
