@@ -17,8 +17,6 @@ export const create = async (despesaData: any): Promise<any> => {
         };
 
         const bodyString = JSON.stringify(body);
-        console.log(bodyString);
-        console.log(API_BASE_URL, body);
 
         const response = await axiosInstance.post(`${API_BASE_URL}/salvar`, body, {
             headers: {
@@ -33,43 +31,32 @@ export const create = async (despesaData: any): Promise<any> => {
     }
 }
 
-export const update = async (despesaId: string, despesaData: any): Promise<any> => {
+export const update = async (despesaId: number, despesaData: any): Promise<any> => {
     try {
-        const response = await axiosInstance.put(`${API_BASE_URL}/${despesaId}`, despesaData, {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-            }
-        });
+        const response = await axiosInstance.put(`${API_BASE_URL}/${despesaId}`, despesaData);
         return response.data;
     } catch (error) {
         throw new Error('Erro ao atualizar despesa');
     }
 }
 
-export const remove = async (despesaId: number): Promise<any> => {
-    try{
-        console.log(API_BASE_URL,"/",despesaId)
-        const response = await axiosInstance.delete(`${API_BASE_URL}/delete/${despesaId}`, {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-            }
-        });
+export const remove = async (despesaId: number) => {
+    try {
+        const response = await axiosInstance.delete(`${API_BASE_URL}/delete/${despesaId}`,);
         return response.data;
     } catch (error) {
+        console.error('Error removing expense:', error.response || error.message);
         throw new Error('Erro ao remover despesa');
     }
 }
+
 
 export const get = async (despesaId: string): Promise<any> => {
     try {
         const response = await axiosInstance.get(`${API_BASE_URL}/${despesaId}`, {
             headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+                'Access-Control-Allow-Origin': '',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
             }
         });

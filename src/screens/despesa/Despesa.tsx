@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { create, update, remove, getByLogin } from '../../services/DespesaService';
+import { create, remove, getByLogin, update } from '../../services/DespesaService';
 
 const DespesaScreen = () => {
     const [descricao, setDescricao] = useState('');
@@ -11,6 +11,7 @@ const DespesaScreen = () => {
     const [mesReferencia, setMesReferencia] = useState('');
     const [email, setEmail] = useState(''); // State to hold email value
     const [expenses, setExpenses] = useState([]);
+    const [despesaData] = useState({ descricao, gasto, mesReferencia });
     const months = [
         'Janeiro/2024',
         'Fevereiro/2024',
@@ -34,24 +35,27 @@ const DespesaScreen = () => {
         return `${year}-${formattedMonth}-01`;
     };
 
-    const handleEdit = (id) => {
-        const expense = expenses.find((exp) => exp.id === id);
-        if (expense) {
-            setDescricao(expense.descricao);
-            setGasto(expense.gasto.replace('R$', ''));
-            setExpenses(expenses.filter((exp) => exp.id !== id));
-        }
+    const handleEdit = async (id: number) => {
+        console.log(descricao)
+        const despesaData = { descricao, gasto, mesReferencia };
+        const response = await update(id, despesaData);
+        return response;
     };
 
-    const handleDelete = (id: number) => {
-        remove(id);
+    
+
+    const handleDelete = async (id: number) => {
+        const response = await remove(id);
         setExpenses(expenses.filter((exp) => exp.id !== id));
+        return response;
     };
 
-    const fillDespesaListByEmail = async (userEmail) => {
+    const fillDespesaListByEmail = async (userEmail: string) => {
         const despesas = await getByLogin(userEmail);
         setExpenses(despesas);
     };
+
+    
 
     const handleSave = () => {
         if (!mesReferencia || mesReferencia === '') {
