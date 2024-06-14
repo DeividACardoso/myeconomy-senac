@@ -82,4 +82,3 @@ export const getByLogin = async (usuario_email: string): Promise<any[]> => {
         throw new Error('Erro ao obter despesa por email');
     }
 }
-
