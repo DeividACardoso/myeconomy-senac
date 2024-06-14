@@ -8,7 +8,13 @@ import AppLabel from '../../components/appLabel/AppLabel';
 import AppLabelNoBold from '../../components/appLabel/AppLabelNoBold';
 import AppButton from '../../components/appButton/AppButton';
 
-const Profile = () => {
+interface Props {
+    navigation: any;
+}
+
+
+
+const Profile: React.FC<Props> = ({ navigation }) => {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -49,6 +55,14 @@ const Profile = () => {
         );
     }
 
+    const handleLogout = () => {
+        AsyncStorage.removeItem('userToken');
+        AsyncStorage.removeItem('nome');
+        AsyncStorage.removeItem('login');
+        AsyncStorage.removeItem('dtNascimento');
+        navigation.navigate('Signin');
+    };  
+
     return (
         <View style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
             <View style={styles.header}>
@@ -73,7 +87,7 @@ const Profile = () => {
                 <AppLabelNoBold text={dataNascimento} ></AppLabelNoBold>
             </View>
             <View style={[styles.buttons, styles.margin]}>
-                <AppButton text="Sair"></AppButton>
+                <AppButton text="Sair" action={handleLogout}></AppButton>
             </View>
         </View>
     );

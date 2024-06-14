@@ -5,7 +5,7 @@ import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Props {
-    navigation: any; // You might want to use a more specific type if you have navigation types defined
+    navigation: any;
     onLoginSuccess?: () => void;
 }
 
@@ -14,26 +14,34 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     const [password, setPassword] = useState<string>("");
     const [message, setMessage] = useState<string>("");
 
-    const handleLogin = () => {
-        AuthService.login(login, password).then(
-            async () => {
-                try {
-                    await AsyncStorage.setItem('login', login);
-                    navigation.navigate('Home');
-                } catch (error) {
-                    console.error('Error storing login in storage:', error);
-                }
+const handleLogin = () => {
+    AuthService.login(login, password).then(
+        async () => {
+            try {
+                await AsyncStorage.setItem('login', login);
                 navigation.navigate('Home');
-            },
-            (error) => {
-                const resMessage =
-                    (error.response && error.response.data && error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                setMessage(resMessage);
+            } catch (error) {
+                console.error('Erro em guardar login em storage:', error);
             }
-        );
-    };
+            navigation.navigate('Home');
+        },
+        (error) => {
+            let resMessage;
+            if (error.response) {
+                if (error.response.status === 403 || error.response.status === 400) {
+                    resMessage = 'Credenciais incorretas. Por favor, tente novamente.';
+                } else {
+                    resMessage = (error.response.data && error.response.data.message) || error.message;
+                }
+            } else if (error.request) {
+                resMessage = "Network error. Please check your internet connection and try again.";
+            } else {
+                resMessage = error.message;
+            }
+            setMessage(resMessage);
+        }
+    );
+};
 
     const goToSignup = () => {
         navigation.navigate("Signup")
