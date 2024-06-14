@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { signup } from '../../services/Auth/UserService';
+import { getByLogin } from '../../services/DespesaService';
 
 const Signup = ({ navigation }) => {
   const [nome, setNome] = useState('');
@@ -12,45 +13,59 @@ const Signup = ({ navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSignup = async () => {
-      // Reset error message
-      setErrorMessage('');
-    
-      // Validate fields
-      if (!nome) {
-        setErrorMessage('O campo Nome é obrigatório.');
-        return;
+  const handleSignup = async () => {
+    setErrorMessage('');
+
+    if (!nome) {
+      setErrorMessage('O campo Nome é obrigatório.');
+      return;
+    }
+    if (!login) {
+      setErrorMessage('O campo Email é obrigatório.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(login)) {
+      setErrorMessage('Formato de Email inválido.');
+      return;
+    }
+    if (!password) {
+      setErrorMessage('O campo Senha é obrigatório.');
+      return;
+    }
+    if (password !== passwordConfirm) {
+      setErrorMessage('As senhas não coincidem.');
+      return;
+    }
+
+    const currentDate = new Date();
+    const age = currentDate.getFullYear() - birthDate.getFullYear();
+
+    if (age < 13) {
+      setErrorMessage('Você precisa ter pelo menos 13 anos para usar o aplicativo.');
+      return;
+    }
+
+    if (errorMessage === '') {
+      try {
+        await signup({
+          nome,
+          login,
+          password,
+          dtNascimento: birthDate.toISOString().split('T')[0],
+        });
+        Alert.alert('Usuário criado com sucesso!');
+        navigation.goBack();
+      } catch (error) {
+        console.log(error);
+        setErrorMessage('Erro ao criar usuário.');
       }
-      if (!login) {
-        setErrorMessage('O campo Email é obrigatório.');
-        return;
-      }
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(login)) {
-        setErrorMessage('Formato de Email inválido.');
-        return;
-      }
-      if (!password) {
-        setErrorMessage('O campo Senha é obrigatório.');
-        return;
-      }
-      if (password !== passwordConfirm) {
-        setErrorMessage('As senhas não coincidem.');
-        return;
-      }
-    
-      const currentDate = new Date();
-      const age = currentDate.getFullYear() - birthDate.getFullYear();
-    
-      if (age < 13) {
-        setErrorMessage('Você precisa ter pelo menos 13 anos para usar o aplicativo.');
-        return;
-      }
+    }
   };
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || birthDate;
-    setShowDatePicker(Platform.OS === 'ios');
+    setShowDatePicker(false);
     setBirthDate(currentDate);
   };
 
@@ -160,7 +175,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'gray',
   },
-  datepicker:{
+  datepicker: {
     width: '100%',
     alignItems: 'center'
   },

@@ -46,21 +46,22 @@ function MyTabs() {
                     ),
                 }}
             />
-            <Tab.Screen
-                name="Perfil"
-                component={Perfil}
-                options={{
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="person" color={color} size={size} />
-                    ),
-                }}
-            />
+
             <Tab.Screen
                 name="Limite"
                 component={Limite}
                 options={{
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="calendar" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="Perfil"
+                component={Perfil}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="person" color={color} size={size} />
                     ),
                 }}
             />
@@ -93,7 +94,7 @@ export default function AppNavigation() {
                 name="Home"
                 component={MyTabs}
                 options={{
-                    title: "Home",
+                    title: "MyEconomy",
                     headerStyle: {
                         backgroundColor: 'white'
                     },
@@ -114,30 +115,6 @@ export default function AppNavigation() {
                     headerShadowVisible: false,
                 }}
             />
-            {/* <Stack.Screen
-                name="ExpenseHistory"
-                component={ExpenseHistory}
-                options={{
-                    title: "",
-                    headerStyle: {
-                        backgroundColor: 'white'
-                    },
-                    headerTintColor: #4CAF50,
-                    headerShadowVisible: false,
-                }}
-            /> */}
-            {/* <Stack.Screen
-                name="LimitHistory"
-                component={LimitHistory}
-                options={{
-                    title: "",
-                    headerStyle: {
-                        backgroundColor: 'white'
-                    },
-                    headerTintColor: #4CAF50,
-                    headerShadowVisible: false,
-                }}
-            /> */}
         </Stack.Navigator>
     );
 }
