@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert, RefreshControl, ScrollView, View, Text, StyleSheet } from "react-native";
+import { Alert, RefreshControl, ScrollView, View } from "react-native";
 import AppCard from "../../components/appCard/AppCard";
 import AppHeaderHome from "../../components/appHeaderHome/AppHeaderHome";
 import AppProgressBar from "../../components/appProgressBar/AppProgressBar";
 import AppTextFormDate from "../../components/appTextForm/AppTextFormDate";
+// import { progressoMes } from "../../services/LimitService";
 import { progressoMes } from "../../services/LimiteService";
 import { formatDate } from "../../utils/DateFormatter";
-
+import { styles } from "./HomeStyle";
+import { useCallback, useEffect, useState } from "react";
+import React from "react";
+ 
 export default function Home({ navigation }) {
   const [nome, setNome] = useState("");
   const [date, setDate] = useState(new Date());
@@ -16,14 +19,15 @@ export default function Home({ navigation }) {
   const [progresso, setProgresso] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [hasLimite, setHasLimite] = useState(true);
-
+ 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchProgresso(date).then(() => setRefreshing(false));
+    fetchProgresso(date)
+      .then(() => setRefreshing(false));
   };
-
-  const fetchProgresso = async (data) => {
-    const mes = formatDate(data);
+ 
+  const fetchProgresso = async (data: Date) => {
+    const mes = formatDate(data)
     await progressoMes(mes)
       .then((response) => {
         if (response.data != null) {
@@ -37,65 +41,45 @@ export default function Home({ navigation }) {
           setProgresso(0);
         }
       })
-      .catch(() => {
-        Alert.alert("Erro", "Erro ao buscar progresso");
+      .catch((error) => {
+        Alert.alert('Erro', 'Erro ao buscar progresso');
       });
-  };
-
+  }
+ 
   useEffect(() => {
     const retrieveNome = async () => {
       try {
-        const value = await AsyncStorage.getItem("nome");
+        const value = await AsyncStorage.getItem('nome');
         if (value) {
           setNome(value);
         }
       } catch (error) {
-        console.error("Erro: resgatando do AsyncStorage", error);
+        console.error('Erro: resgatando do AsyncStorage', error);
       }
     };
-
+ 
     retrieveNome();
   }, []);
-
-  const handleChangeDate = (data) => {
-    setDate(data);
-    fetchProgresso(data);
-  };
-
+ 
+  const handleChangeDate = (data: Date) => {
+    setDate(data)
+    fetchProgresso(data)
+  }
+ 
   return (
-    <View style={styles.container}>
-      <AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} />
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View style={styles.content}>
-          <AppTextFormDate value={date} onChange={handleChangeDate} format="monthYear" />
-          <View style={styles.card}>
-            <Text style={styles.message}>Continue assim!</Text>
-          </View>
-          <AppProgressBar despesa={despesa} limite={limite} hasLimite={hasLimite} progressLevel={progresso / 100} />
-        </View>
-      </ScrollView>
-    </View>
+<View style={styles.container}>
+<AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} />
+<ScrollView
+        refreshControl={
+<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+<View style={{ paddingHorizontal: 16 }}>
+<AppTextFormDate value={date} onChange={handleChangeDate} format='monthYear' />
+<AppCard progressLevel={progresso} />
+<AppProgressBar despesa={despesa} limite={limite} hasLimite={hasLimite} progressLevel={progresso / 100} />
+</View>
+</ScrollView>
+</View>
+
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  content: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-  },
-  card: {
-    backgroundColor: "#4caf50",
-    borderRadius: 8,
-    padding: 20,
-    alignItems: "center",
-    marginVertical: 16,
-  },
-  message: {
-    fontSize: 18,
-    color: "#fff",
-  },
-});

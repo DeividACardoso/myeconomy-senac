@@ -79,6 +79,7 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
     marginLeft: 'auto',
     marginRight: 'auto',
+    marginTop: 12,
     textAlign: "center",
     backgroundColor: "#4CAF50",
   },

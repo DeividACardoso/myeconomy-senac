@@ -85,30 +85,30 @@ export default function Limit({ navigation }: LimitProps) {
     }
   };
 
-  // const handleDelete = async (index: number) => {
-  //   const novosLimites = limites.filter((_, i) => i !== index);
+  const handleDelete = async (index: number) => {
+    const novosLimites = limites.filter((_, i) => i !== index);
 
-  //   try {
-  //     await AsyncStorage.setItem("limites", JSON.stringify(novosLimites));
-  //     setLimites(novosLimites);
-  //     Alert.alert("Sucesso", "Limite excluído com sucesso.");
-  //   } catch (error) {
-  //     console.error("Erro ao deletar o limite:", error);
-  //   }
-  // };
-
-  const handleDelete = async (id: number) => {
-    try {      
-        await axios.delete(`http://10.0.2.2:8080/api/limite-mes/delete/${id}`);
-        const novosLimites = limites.filter((limite) => limite.id !== id);
-        await AsyncStorage.setItem("limites", JSON.stringify(novosLimites));
-        setLimites(novosLimites);
-        Alert.alert("Sucesso", "Limite excluído com sucesso.");
+    try {
+      await AsyncStorage.setItem("limites", JSON.stringify(novosLimites));
+      setLimites(novosLimites);
+      Alert.alert("Sucesso", "Limite excluído com sucesso.");
     } catch (error) {
-        console.error("Erro ao deletar o limite:", error);
-        Alert.alert("Erro", "Não foi possível excluir o limite.");
+      console.error("Erro ao deletar o limite:", error);
     }
-};
+  };
+
+//   const handleDelete = async (id: number) => {
+//     try {      
+//         await axios.delete(`http://10.0.2.2:8080/api/limite-mes/delete/${id}`);
+//         const novosLimites = limites.filter((limite) => limite.id !== id);
+//         await AsyncStorage.setItem("limites", JSON.stringify(novosLimites));
+//         setLimites(novosLimites);
+//         Alert.alert("Sucesso", "Limite excluído com sucesso.");
+//     } catch (error) {
+//         console.error("Erro ao deletar o limite:", error);
+//         Alert.alert("Erro", "Não foi possível excluir o limite.");
+//     }
+// };
 
   const handleEdit = (id: number) => {
     const limite = limites.find(l => l.id === id);
@@ -117,9 +117,7 @@ export default function Limit({ navigation }: LimitProps) {
         setMes(limite.mes);
         setEditId(limite.id);
     }
-    
   };
-  // TODO CONSULTA/PESQUISA
   const handleSearch = () => {
     const results = limites.filter(limite => 
       limite.mes.includes(searchTerm) || 
@@ -127,6 +125,7 @@ export default function Limit({ navigation }: LimitProps) {
   );
   setResultados(results);
   };
+
 
   return (
     <View style={styles.container}>
@@ -166,7 +165,6 @@ export default function Limit({ navigation }: LimitProps) {
         <Text style={styles.buttonText}>Pesquisar</Text>
       </TouchableOpacity>
 
-
       <ScrollView style={styles.scrollView}>
         {limites.map((despesa, index) => (
           <View key={index} style={styles.despesaItem}>
@@ -186,10 +184,14 @@ export default function Limit({ navigation }: LimitProps) {
               >
                 <Text style={styles.buttonText}>Excluir</Text>
               </TouchableOpacity>
+
+              
             </View>
           </View>
+          
         ))}
       </ScrollView>
+      
     </View>
   );
   
