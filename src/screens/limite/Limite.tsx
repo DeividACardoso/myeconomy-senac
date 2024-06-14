@@ -161,7 +161,7 @@ export default function Limit({ navigation }: LimitProps) {
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Salvar</Text>
       </TouchableOpacity>
-
+          <View></View> 
       <TouchableOpacity style={styles.buttonPesquisa} onPress={handleSearch}>
         <Text style={styles.buttonText}>Pesquisar</Text>
       </TouchableOpacity>
