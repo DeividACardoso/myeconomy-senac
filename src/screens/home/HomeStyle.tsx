@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     gap: 6,
   },
   link: {
-    marginTop: 8,
+    marginTop: 14,
   },
   buttons: {
     backgroundColor: '#D6A72D',
