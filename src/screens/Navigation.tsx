@@ -4,13 +4,10 @@ import LoginScreen from "./login/Login";
 import Signup from "./signup/Signup";
 import Home from "./home/Home";
 import React from "react";
-// import Expense from "./expense/Expense";
 import Limite from "./limite/Limite";
 import Perfil from "./profile/Profile";
 import { Ionicons } from '@expo/vector-icons';
 import DespesaScreen from "./despesa/Despesa";
-// import ExpenseHistory from './expense/ExpenseHistory';
-// import LimitHistory from './limit/LimitHistory';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -18,14 +15,24 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
 
     return (
+
         <Tab.Navigator
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: {
-                    backgroundColor: 'white',
+                    backgroundColor: '#4CAF50',
+                    height: 55,
+                    paddingTop: 5,
                 },
-                tabBarActiveTintColor: '#4CAF50',
+                tabBarActiveTintColor: 'white',
                 tabBarInactiveTintColor: 'green',
+                tabBarLabelStyle: {
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                },
+                tabBarIconStyle: {
+                    marginBottom: -3,
+                },
             }}
         >
             <Tab.Screen
@@ -33,7 +40,7 @@ function MyTabs() {
                 component={Home}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="home" color={color} size={size} />
+                        <Ionicons name="home-sharp" color={color} size={size} />
                     ),
                 }}
             />
@@ -42,17 +49,16 @@ function MyTabs() {
                 component={DespesaScreen}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="wallet" color={color} size={size} />
+                        <Ionicons name="wallet-sharp" color={color} size={size} />
                     ),
                 }}
             />
-
             <Tab.Screen
                 name="Limite"
                 component={Limite}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="calendar" color={color} size={size} />
+                        <Ionicons name="calendar-sharp" color={color} size={size} />
                     ),
                 }}
             />
@@ -61,7 +67,7 @@ function MyTabs() {
                 component={Perfil}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="person" color={color} size={size} />
+                        <Ionicons name="person-sharp" color={color} size={size} />
                     ),
                 }}
             />
