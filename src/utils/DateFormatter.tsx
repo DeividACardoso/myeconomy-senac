@@ -1,28 +1,32 @@
 export const formatDate = (date: Date): string => {
-    const data = new Date(date);
-    const mes = data.toLocaleString('pt-BR', { month: 'long' });
-    const ano = data.toLocaleString('pt-BR', { year: 'numeric' });
-    return mes + '/' + ano;
-}
+    const mes = date.toLocaleString('pt-BR', { month: 'long' });
+    const ano = date.toLocaleString('pt-BR', { year: 'numeric' });
+    return `${mes}/${ano}`;
+};
 
-export const createDateFromMes = (mes: string): Date => {
-    const [monthString, yearString] = mes.split('/');
+export const createDateFromMes = (mes: string): Date | null => {
     const meses = {
-        'janeiro': 0,
-        'fevereiro': 1,
-        'março': 2,
-        'abril': 3,
-        'maio': 4,
-        'junho': 5,
-        'julho': 6,
-        'agosto': 7,
-        'setembro': 8,
-        'outubro': 9,
-        'novembro': 10,
-        'dezembro': 11,
+        'janeiro': 1,
+        'fevereiro': 2,
+        'março': 3,
+        'abril': 4,
+        'maio': 5,
+        'junho': 6,
+        'julho': 7,
+        'agosto': 8,
+        'setembro': 9,
+        'outubro': 10,
+        'novembro': 11,
+        'dezembro': 12,
     };
-    const month = meses[monthString];
+
+    const [monthString, yearString] = mes.split('/');
+    const month = meses[monthString.toLowerCase()]; // Convert monthString to lowercase for case insensitivity
     const year = parseInt(yearString, 10);
-    const date = new Date(year, month, 1);
-    return date;
-}
+
+    if (!isNaN(year) && meses.hasOwnProperty(monthString.toLowerCase())) {
+        return new Date(year, month, 1);
+    }
+
+    return null; // Return null if parsing fails
+};

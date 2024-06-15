@@ -7,28 +7,37 @@ const API_BASE_URL = "http://10.0.2.2:8080/api/despesas";
 
 export const create = async (despesaData: any): Promise<any> => {
     try {
-        const { descricao, gasto, mesReferencia } = despesaData;
+        console.log('despesaData:', despesaData);
+        const { descricao, gasto, referenciaMes } = despesaData;
+        console.log('despesaData.referenciaMes:', despesaData.referenciaMes);
         const usuario_email = await AsyncStorage.getItem('login');
 
+        if (!usuario_email) {
+            throw new Error('Login não encontrado em storage.');
+        }
+
         const body = {
-            descricao : descricao,
-            gasto: gasto,
-            referenciaMes: mesReferencia,
-            usuarioEmail : usuario_email
+            descricao,
+            gasto,
+            referenciaMes,
+            usuarioEmail: usuario_email,
         };
 
-        const bodyString = JSON.stringify(body);
+        console.log('body.referenciaMes:', body.referenciaMes);
 
-        const response = await axiosInstance.post(`${API_BASE_URL}/salvar`, body,);
+        const response = await axiosInstance.post(`${API_BASE_URL}/salvar`, body);
+
+        console.log('response.data:', response.data);
         return response.data;
     } catch (error) {
-        throw new Error('Erro ao criar despesa. Erro: ', error);
+        console.error('Error creating expense:', error);
+        throw new Error(`Erro ao criar despesa. Erro: ${error.message}`);
     }
-}
+};
 
 export const update = async (despesaId: number, despesaData: any): Promise<any> => {
     try {
-        const response = await axiosInstance.put(`${API_BASE_URL}/${despesaId}`, despesaData);
+        const response = await axiosInstance.put(`${API_BASE_URL}/atualizar/${despesaId}`, despesaData);
         return response.data;
     } catch (error) {
         throw new Error('Erro ao atualizar despesa');
@@ -61,5 +70,15 @@ export const getByLogin = async (usuario_email: string): Promise<any[]> => {
         return response.data;
     } catch (error) {
         throw new Error('Erro ao obter despesa por email');
+    }
+}
+
+export const getByMesReferenciaAndLogin = async (login: string, mesReferencia: Date): Promise<any[]> => {
+    console.log('getByMesReferencia:', mesReferencia);
+    try {
+        const response = await axiosInstance.get(`${API_BASE_URL}/por-mes-e-login/${mesReferencia}/${login}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Erro ao obter despesas por mes de referencia + login');
     }
 }

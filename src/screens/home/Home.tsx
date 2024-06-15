@@ -10,7 +10,7 @@ import { formatDate } from "../../utils/DateFormatter";
 import { styles } from "./HomeStyle";
 import { useCallback, useEffect, useState } from "react";
 import React from "react";
- 
+
 export default function Home({ navigation }) {
   const [nome, setNome] = useState("");
   const [date, setDate] = useState(new Date());
@@ -19,13 +19,13 @@ export default function Home({ navigation }) {
   const [progresso, setProgresso] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [hasLimite, setHasLimite] = useState(true);
- 
+
   const onRefresh = () => {
     setRefreshing(true);
     fetchProgresso(date)
       .then(() => setRefreshing(false));
   };
- 
+
   const fetchProgresso = async (data: Date) => {
     const mes = formatDate(data)
     await progressoMes(mes)
@@ -45,7 +45,7 @@ export default function Home({ navigation }) {
         Alert.alert('Erro', 'Erro ao buscar progresso');
       });
   }
- 
+
   useEffect(() => {
     const retrieveNome = async () => {
       try {
@@ -57,29 +57,29 @@ export default function Home({ navigation }) {
         console.error('Erro: resgatando do AsyncStorage', error);
       }
     };
- 
+
     retrieveNome();
   }, []);
- 
+
   const handleChangeDate = (data: Date) => {
     setDate(data)
     fetchProgresso(data)
   }
- 
+
   return (
-<View style={styles.container}>
-<AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} />
-<ScrollView
+    <View style={styles.container}>
+      <AppHeaderHome nome={nome} navigation={navigation} avatar={undefined} />
+      <ScrollView
         refreshControl={
-<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-<View style={{ paddingHorizontal: 16 }}>
-<AppTextFormDate value={date} onChange={handleChangeDate} format='monthYear' />
-<AppCard progressLevel={progresso} />
-<AppProgressBar despesa={despesa} limite={limite} hasLimite={hasLimite} progressLevel={progresso / 100} />
-</View>
-</ScrollView>
-</View>
+        <View style={{ paddingHorizontal: 16 }}>
+          <AppTextFormDate value={date} onChange={handleChangeDate} format='monthYear' />
+          <AppCard progressLevel={progresso} />
+          <AppProgressBar despesa={despesa} limite={limite} hasLimite={hasLimite} progressLevel={progresso / 100} />
+        </View>
+      </ScrollView>
+    </View>
 
   );
 }
