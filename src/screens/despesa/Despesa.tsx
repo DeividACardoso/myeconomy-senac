@@ -1,75 +1,84 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { create, remove, getByLogin, update } from '../../services/DespesaService';
+import { create, remove, getByLogin, update, getByMesReferenciaAndLogin } from '../../services/DespesaService';
+import { formatDate } from '../../utils/DateFormatter';
+import styles from './DespesaStyle';
 
 const DespesaScreen = () => {
     const [descricao, setDescricao] = useState('');
     const [gasto, setGasto] = useState('');
     const [mesReferencia, setMesReferencia] = useState(new Date());
     const [mesReferenciaHistorico, setMesReferenciaHistorico] = useState(new Date());
-    const [email, setEmail] = useState(''); // State to hold email value
-    const [expenses, setExpenses] = useState([]);
-    const [showDatePicker1, setShowDatePicker1] = useState(false);
-    const [showDatePicker2, setShowDatePicker2] = useState(false);
-    const months = [
-        'Janeiro/2024',
-        'Fevereiro/2024',
-        'Março/2024',
-        'Abril/2024',
-        'Maio/2024',
-        'Junho/2024',
-        'Julho/2024',
-        'Agosto/2024',
-        'Setembro/2024',
-        'Outubro/2024',
-        'Novembro/2024',
-        'Dezembro/2024',
-    ];
+    const [email, setEmail] = useState('');
+    const [despesas, setDespesas] = useState([]);
+    const [showDatePickerSave, setShowDatePickerSave] = useState(false);
+    const [showDatePickerHistory, setShowDatePickerHistory] = useState(false);
+    const [editingDespesa, setEditingDespesa] = useState(null);
 
-    const getCurrentYearMonth = () => {
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth() + 1;
-        const formattedMonth = month < 10 ? `0${month}` : `${month}`;
-        return `${year}-${formattedMonth}-01`;
-    };
+    useEffect(() => {
+        initialize();
+    }, [mesReferenciaHistorico]);
 
-    const fillDespesaListByEmail = async (userEmail) => {
-        const despesas = await getByLogin(userEmail);
-        setExpenses(despesas);
-    };
-
-    const handleSave = () => {
-        if (!mesReferencia) {
-            setMesReferencia(new Date(getCurrentYearMonth()));
+    const initialize = async () => {
+        const userEmail = await AsyncStorage.getItem('login');
+        console.log('userEmail:', userEmail);
+        if (userEmail) {
+            setEmail(userEmail);
+            await fillDespesaListByLoginAndMonthYear(mesReferenciaHistorico, userEmail);
         }
-        if (descricao && gasto && mesReferencia) {
-            const currentMonth = new Date().getMonth();
-            const selectedMonth = mesReferencia.getMonth();
-            if (selectedMonth >= currentMonth) {
-                const newExpense = { id: (expenses.length + 1).toString(), descricao, gasto, mesReferencia };
-                create(newExpense);
-                setExpenses([...expenses, newExpense]);
-                setDescricao('');
-                setGasto('');
-                setMesReferencia(new Date());
+    };
+
+    const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEmail) => {
+        const despesasAtualizadas = await getByMesReferenciaAndLogin(userEmail, mesReferenciaHistorico.toISOString().split('T')[0]);
+        setDespesas(despesasAtualizadas);
+        console.log('despesasAtualizadas:', despesasAtualizadas);
+    };
+
+    const handleSave = async () => {
+        if (!descricao || !gasto || !mesReferencia) {
+            Alert.alert('Error', 'Please fill out all fields.');
+            return;
+        }
+
+        const mesAtual = new Date().getMonth();
+        const mesSelecionado = mesReferencia.getMonth();
+
+        if (mesSelecionado < mesAtual) {
+            Alert.alert('Error', 'Não é possível adicionar despesas em meses anteriores.');
+            return;
+        }
+
+        if (isNaN(parseFloat(gasto)) || parseFloat(gasto) <= 0) {
+            Alert.alert('Error', 'Por favor insira um valor válido.');
+            return;
+        }
+
+        const novaDespesa = {
+            descricao,
+            gasto: parseFloat(gasto),
+            referenciaMes: mesReferencia.toISOString().split('T')[0],
+            usuarioEmail: email,
+        };
+
+        try {
+            let response;
+            if (editingDespesa) {
+                response = await update(editingDespesa.id, novaDespesa);
+                setDespesas(despesas.map((exp) => (exp.id === editingDespesa.id ? response : exp)));
+                setEditingDespesa(null);
             } else {
-                alert('Não é possível adicionar despesas em meses anteriores.');
+                response = await create(novaDespesa);
+                setDespesas([...despesas, response]);
             }
-        }
-    };
-
-    const handleEdit = async (id) => {
-        const currentMonth = new Date().getMonth();
-        const selectedMonth = mesReferencia.getMonth();
-        if (selectedMonth >= currentMonth) {
-            const despesaData = { descricao, gasto, mesReferencia };
-            const response = await update(id, despesaData);
-            return response;
-        } else {
-            alert('Não é possível editar despesas de meses anteriores.');
+            setDescricao('');
+            setGasto('');
+            setMesReferencia(new Date());
+            Alert.alert('Success', `Despesa ${editingDespesa ? 'atualizada' : 'criada'} com sucesso.`);
+        } catch (error) {
+            console.error('Error creating/updating expense:', error);
+            Alert.alert('Error', `Failed to ${editingDespesa ? 'update' : 'create'} expense.`);
         }
     };
 
@@ -77,39 +86,52 @@ const DespesaScreen = () => {
         const currentMonth = new Date().getMonth();
         const selectedMonth = mesReferenciaHistorico.getMonth();
         if (selectedMonth >= currentMonth) {
-            const response = await remove(id);
-            setExpenses(expenses.filter((exp) => exp.id !== id));
-            return response;
+            Alert.alert(
+                'Confirm Delete',
+                'Are you sure you want to delete this expense?',
+                [
+                    {
+                        text: 'Cancelar',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'Delete',
+                        style: 'destructive',
+                        onPress: async () => {
+                            await remove(id);
+                            setDespesas(despesas.filter((exp) => exp.id !== id));
+                        },
+                    },
+                ],
+                { cancelable: false }
+            );
         } else {
-            alert('Não é possível excluir despesas de meses anteriores.');
+            Alert.alert('Error', 'Não é possível excluir despesas de meses anteriores.');
         }
     };
 
-    useEffect(() => {
-        const getEmailFromStorage = async () => {
-            const userEmail = await AsyncStorage.getItem('login');
-            if (userEmail) {
-                setEmail(userEmail);
-                fillDespesaListByEmail(userEmail);
-            }
-        };
-        getEmailFromStorage();
-    }, []);
-
-    const onChangeDate1 = (event, selectedDate) => {
-        const currentDate = selectedDate || mesReferencia;
-        setShowDatePicker1(false);
-        currentDate.setDate(1);
-        const formattedDate = currentDate.toISOString().split('T')[0];
-        setMesReferencia(new Date(formattedDate));
+    const handleEdit = (item) => {
+        setEditingDespesa(item);
+        setDescricao(item.descricao);
+        setGasto(item.gasto.toString());
+        setMesReferencia(new Date(item.referenciaMes));
     };
 
-    const onChangeDate2 = (event, selectedDate) => {
-        const currentDate = selectedDate || mesReferenciaHistorico;
-        setShowDatePicker2(false);
-        currentDate.setDate(1);
-        const formattedDate = currentDate.toISOString().split('T')[0];
-        setMesReferenciaHistorico(new Date(formattedDate));
+    const onChangeSaveDate = (event, selectedDate) => {
+        setShowDatePickerSave(false);
+        if (selectedDate) {
+            setMesReferencia(selectedDate);
+        }
+    };
+
+    const onChangeHistoryDate = (event, selectedDate) => {
+        setShowDatePickerHistory(false);
+        if (selectedDate) {
+            console.log('selectedDate no change:', selectedDate);
+            selectedDate.setDate(1);
+            console.log('selectedDate date change:', selectedDate);
+            setMesReferenciaHistorico(selectedDate);
+        }
     };
 
     return (
@@ -121,6 +143,7 @@ const DespesaScreen = () => {
                 value={descricao}
                 onChangeText={setDescricao}
             />
+
             <TextInput
                 style={styles.input}
                 placeholder="Valor"
@@ -128,51 +151,55 @@ const DespesaScreen = () => {
                 onChangeText={setGasto}
                 keyboardType="numeric"
             />
-            <TouchableOpacity style={styles.datepicker} onPress={() => setShowDatePicker1(true)}>
+            {/* Data para salvar */}
+            <TouchableOpacity style={styles.datepicker} onPress={() => setShowDatePickerSave(true)}>
                 <TextInput
                     style={styles.input}
                     placeholder="Mês da despesa."
-                    value={mesReferencia.toISOString().split('T')[0]}
+                    value={formatDate(mesReferencia)}
                     editable={false}
                     pointerEvents="none"
                 />
             </TouchableOpacity>
-            {showDatePicker1 && (
+            {showDatePickerSave && (
                 <DateTimePicker
                     value={mesReferencia}
                     mode="date"
                     display="spinner"
-                    onChange={onChangeDate1}
+                    onChange={onChangeSaveDate}
                 />)}
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>SALVAR</Text>
+                <Text style={styles.saveButtonText}>{editingDespesa ? 'ATUALIZAR' : 'SALVAR'}</Text>
             </TouchableOpacity>
             <Text style={styles.historyTitle}>Histórico</Text>
-            <TouchableOpacity style={styles.datepicker} onPress={() => setShowDatePicker2(true)}>
+            {/* Data para o histórico */}
+            <TouchableOpacity style={styles.datepicker} onPress={() => setShowDatePickerHistory(true)}>
                 <TextInput
                     style={styles.input}
-                    value={mesReferenciaHistorico.toISOString().split('T')[0]}
+                    placeholder="Mês do histórico."
+                    value={formatDate(mesReferenciaHistorico)}
                     editable={false}
                     pointerEvents="none"
                 />
             </TouchableOpacity>
-            {showDatePicker2 && (
+            {showDatePickerHistory && (
                 <DateTimePicker
-                    style={styles.datepicker}
                     value={mesReferenciaHistorico}
                     mode="date"
                     display="spinner"
-                    onChange={onChangeDate2}
-                />)}
+                    onChange={onChangeHistoryDate}
+                />
+            )}
             <FlatList
-                data={expenses}
-                keyExtractor={(item) => item.id}
+                data={despesas}
+                keyExtractor={(item) => item.id.toString()}
                 ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma despesa encontrada</Text>}
                 renderItem={({ item }) => (
                     <View style={styles.expenseItem}>
-                        <Text style={styles.expenseText}>{item.descricao} Valor: R${item.gasto}</Text>
+                        <Text style={styles.expenseText}>{item.descricao}</Text>
+                        <Text style={styles.expenseText}>R${item.gasto}</Text>
                         <View style={styles.expenseActions}>
-                            <TouchableOpacity onPress={() => handleEdit(Number(item.id))} style={styles.actionButton}>
+                            <TouchableOpacity onPress={() => handleEdit(item)} style={styles.actionButton}>
                                 <Text style={styles.actionButtonText}>✏️</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => handleDelete(Number(item.id))} style={styles.actionButton}>
@@ -185,84 +212,5 @@ const DespesaScreen = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        textAlign: 'center',
-    },
-    input: {
-        height: 40,
-        borderColor: 'black',
-        borderWidth: 1,
-        marginBottom: 12,
-        paddingHorizontal: 8,
-        borderRadius: 8,
-        color: 'black',
-        fontWeight: '600',
-    },
-    picker: {
-        height: 40,
-        marginBottom: 16,
-        alignSelf: 'center',
-        width: '100%',
-    },
-    saveButton: {
-        backgroundColor: '#4CAF50',
-        padding: 12,
-        alignItems: 'center',
-        marginBottom: 16,
-        borderRadius: 8,
-
-    },
-    saveButtonText: {
-        color: '#fff',
-        fontWeight: '900',
-        fontSize: 16,
-    },
-    historyTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 8,
-    },
-    expenseItem: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#4CAF50',
-        padding: 8,
-        marginBottom: 8,
-    },
-    expenseText: {
-        fontSize: 16,
-        color: '#fff',
-    },
-    expenseActions: {
-        flexDirection: 'row',
-    },
-    actionButton: {
-        marginLeft: 8,
-    },
-    actionButtonText: {
-        fontSize: 16,
-    },
-    emptyText: {
-        textAlign: 'center',
-        fontSize: 16,
-    },
-    datepicker: {
-        height: 40,
-        marginBottom: 16,
-        alignSelf: 'center',
-        width: '100%',
-    },
-});
 
 export default DespesaScreen;
