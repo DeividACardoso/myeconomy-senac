@@ -78,6 +78,10 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: '100%',
     },
+    disabledButton: {
+        alignItems: 'center',
+        borderRadius: 8,
+    },
 });
 
 export default styles;

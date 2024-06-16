@@ -45,7 +45,7 @@ const DespesaScreen = () => {
         const mesAtual = new Date().getMonth();
         const mesSelecionado = mesReferencia.getMonth();
 
-        if (mesSelecionado < mesAtual) {
+        if (mesSelecionado > mesAtual) {
             Alert.alert('Error', 'Não é possível adicionar despesas em meses anteriores.');
             return;
         }
@@ -111,10 +111,14 @@ const DespesaScreen = () => {
     };
 
     const handleEdit = (item) => {
-        setEditingDespesa(item);
-        setDescricao(item.descricao);
-        setGasto(item.gasto.toString());
-        setMesReferencia(new Date(item.referenciaMes));
+        if (mesReferenciaHistorico.getMonth() >= new Date().getMonth()) {
+            setEditingDespesa(item);
+            setDescricao(item.descricao);
+            setGasto(item.gasto.toString());
+            setMesReferencia(new Date(item.referenciaMes));
+        } else {
+            Alert.alert('Error', 'Não é possível editar despesas de meses anteriores.');
+        }
     };
 
     const onChangeSaveDate = (event, selectedDate) => {
@@ -199,10 +203,18 @@ const DespesaScreen = () => {
                         <Text style={styles.expenseText}>{item.descricao}</Text>
                         <Text style={styles.expenseText}>R${item.gasto}</Text>
                         <View style={styles.expenseActions}>
-                            <TouchableOpacity onPress={() => handleEdit(item)} style={styles.actionButton}>
+                            <TouchableOpacity
+                                onPress={() => handleEdit(item)}
+                                style={[styles.actionButton, mesReferenciaHistorico.toDateString >= new Date().getMonth().toString ? null : styles.disabledButton]}
+                                disabled={mesReferenciaHistorico.toDateString >= new Date().getMonth().toString}
+                            >
                                 <Text style={styles.actionButtonText}>✏️</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleDelete(Number(item.id))} style={styles.actionButton}>
+                            <TouchableOpacity
+                                onPress={() => handleDelete(Number(item.id))}
+                                style={[styles.actionButton, mesReferenciaHistorico.toDateString >= new Date().getMonth().toString ? null : styles.disabledButton]}
+                                disabled={mesReferenciaHistorico.toDateString >= new Date().getMonth().toString}
+                            >
                                 <Text style={styles.actionButtonText}>🗑️</Text>
                             </TouchableOpacity>
                         </View>
