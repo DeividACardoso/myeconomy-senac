@@ -91,4 +91,41 @@ export const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
   },
+  emptyText: {
+    textAlign: 'center',
+    fontSize: 16,
+},
+limiteItem: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  backgroundColor: '#4CAF50',
+  padding: 8,
+  marginBottom: 8,
+  borderRadius: 8,
+},
+limiteText: {
+  fontSize: 16,
+  color: '#fff',
+},
+limitActions: {
+  flexDirection: 'row',
+},
+actionButton: {
+  marginLeft: 8,
+},
+actionButtonText: {
+  fontSize: 16,
+},
+historyTitle: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  marginBottom: 8,
+},
+datepicker: {
+  height: 40,
+  marginBottom: 16,
+  alignSelf: 'center',
+  width: '100%',
+},
 });
