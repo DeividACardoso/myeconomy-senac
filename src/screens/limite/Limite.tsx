@@ -9,28 +9,17 @@ import { Picker } from "@react-native-picker/picker";
 import AppCard from "../../components/appCard/AppCard";
 import AppHeaderHome from "../../components/appHeaderHome/AppHeaderHome";
 import AppTextFormDate from "../../components/appTextForm/AppTextFormDate";
-import { styles } from "./LimiteStyle";
 import React from "react";
 import axios from "axios";
-import { remove, create, update, getByMesReferenciaAndLogin } from "../../services/LimiteService";
+import {
+  remove,
+  create,
+  update,
+  getByMesReferenciaAndLogin,
+} from "../../services/LimiteService";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate } from "../../utils/DateFormatter";
-
-const meses = [
-  "Janeiro/2024",
-  "Fevereiro/2024",
-  "Março/2024",
-  "Abril/2024",
-  "Maio/2024",
-  "Junho/2024",
-  "Julho/2024",
-  "Agosto/2024",
-  "Setembro/2024",
-  "Outubro/2024",
-  "Novembro/2024",
-  "Dezembro/2024",
-];
-
+import styles from "./LimiteStyle";
 interface Limite {
   valor: number;
   mes: string;
@@ -41,15 +30,12 @@ interface LimitProps {
   navigation: any;
 }
 const LimiteScreen = () => {
-  // export default function Limit({ navigation }: LimitProps) {
-  // {
   const [limite, setLimite] = useState<number>(0);
   const [hasLimite, setHasLimite] = useState<boolean>(true);
   const [nextId, setNextId] = useState<number>(0);
   const [resultados, setResultados] = useState<Limite[]>([]);
   const [editId, setEditId] = useState<number | null>(null);
   const [valor, setValor] = useState("");
-  const [mes, setMes] = useState(meses[0]);
   const [limites, setLimites] = useState([]);
   const [mesReferenciaHistorico, setMesReferenciaHistorico] = useState(
     new Date()
@@ -59,25 +45,35 @@ const LimiteScreen = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [email, setEmail] = useState("");
   const [showDatePickerHistory, setShowDatePickerHistory] = useState(false);
+  const [showDatePickerSave, setShowDatePickerSave] = useState(false);
 
   useEffect(() => {
     initialize();
-}, [mesReferenciaHistorico]);
+  }, [mesReferenciaHistorico]);
 
-const initialize = async () => {
-    const userEmail = await AsyncStorage.getItem('login');
-    console.log('userEmail:', userEmail);
+  const initialize = async () => {
+    const userEmail = await AsyncStorage.getItem("login");
+    console.log("userEmail:", userEmail);
     if (userEmail) {
-        setEmail(userEmail);
-        await fillDespesaListByLoginAndMonthYear(mesReferenciaHistorico, userEmail);
+      setEmail(userEmail);
+      await fillDespesaListByLoginAndMonthYear(
+        mesReferenciaHistorico,
+        userEmail
+      );
     }
-};
+  };
 
-const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEmail) => {
-    const limitesAtualizados = await getByMesReferenciaAndLogin(userEmail, mesReferenciaHistorico.toISOString().split('T')[0]);
+  const fillDespesaListByLoginAndMonthYear = async (
+    mesReferenciaHistorico,
+    userEmail
+  ) => {
+    const limitesAtualizados = await getByMesReferenciaAndLogin(
+      userEmail,
+      mesReferenciaHistorico.toISOString().split("T")[0]
+    );
     setLimites(limitesAtualizados);
-    console.log('limitesAtualizados:', limitesAtualizados);
-};
+    console.log("limitesAtualizados:", limitesAtualizados);
+  };
 
   const handleSave = async () => {
     if (!valor || !mesReferencia) {
@@ -94,17 +90,15 @@ const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEm
       return;
     }
 
-    // if ((valor) || (valor) != null) {
-    //     Alert.alert('Error', 'Por favor insira um valor válido.');
-    //     return;
-    // }
+    if (valor || valor != null) {
+      Alert.alert("Error", "Por favor insira um valor válido.");
+      return;
+    }
 
     const novoLimite = {
       valor,
       referenciaMes: mesReferencia.toISOString().split("T")[0],
       usuarioEmail: email,
-      // mesReferencia: Date
-      // mesReferencia:mesReferencia.toISOString().split("T")[0],
     };
 
     try {
@@ -134,17 +128,6 @@ const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEm
     }
   };
 
-  // const handleDelete = async (index: number) => {
-  //   const novosLimites = limites.filter((_, i) => i !== index);
-
-  //   try {
-  //     await AsyncStorage.setItem("limites", JSON.stringify(novosLimites));
-  //     setLimites(novosLimites);
-  //     Alert.alert("Sucesso", "Limite excluído com sucesso.");
-  //   } catch (error) {
-  //     console.error("Erro ao deletar o limite:", error);
-  //   }
-  // };
   const handleDelete = async (id) => {
     const currentMonth = new Date().getMonth();
     const selectedMonth = mesReferenciaHistorico.getMonth();
@@ -176,14 +159,6 @@ const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEm
     }
   };
 
-  // const handleEdit = (id: number) => {
-  //   const limite = limites.find(l => l.id === id);
-  //   if (limite) {
-  //     setValor(limite.valor.toString());
-  //     setMes(limite.mes);
-  //     setEditId(limite.id);
-  //   }
-  // };
   const handleEdit = (item) => {
     if (mesReferenciaHistorico.getMonth() >= new Date().getMonth()) {
       setEditingLimite(item);
@@ -194,6 +169,12 @@ const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEm
         "Error",
         "Não é possível editar os limites de meses anteriores."
       );
+    }
+  };
+  const onChangeSaveDate = (event, selectedDate) => {
+    setShowDatePickerSave(false);
+    if (selectedDate) {
+      setMesReferencia(selectedDate);
     }
   };
 
@@ -207,14 +188,14 @@ const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEm
     }
   };
 
-  // const handleSearch = () => {
-  //   const results = limites.filter(
-  //     (limite) =>
-  //       limite.mes.includes(searchTerm) ||
-  //       limite.valor.toString().includes(searchTerm)
-  //   );
-  //   setResultados(results);
-  // };
+  const handleSearch = () => {
+    const results = limites.filter(
+      (limite) =>
+        limite.mes.includes(searchTerm) ||
+        limite.valor.toString().includes(searchTerm)
+    );
+    setResultados(results);
+  };
 
   return (
     <View style={styles.container}>
@@ -227,33 +208,42 @@ const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEm
           marginBottom: 60,
         }}
       ></View>
-      <Text style={styles.label}>Valor:</Text>
       <TextInput
         style={styles.input}
         value={valor.toString()}
-        onChangeText={(text) => setValor(text)}
         keyboardType="numeric"
+        placeholder="Valor"
+        onChangeText={(text) => setValor(text)}
       />
-      <Text style={styles.label}>Mês:</Text>
 
-      <Picker
-        selectedValue={mes}
-        style={styles.picker}
-        onValueChange={(itemValue) => setMes(itemValue)}
+      <TouchableOpacity
+        style={styles.datepicker}
+        onPress={() => setShowDatePickerSave(true)}
       >
-        {meses.map((mes) => (
-          <Picker.Item key={mes} label={mes} value={mes} />
-        ))}
-      </Picker>
+        <TextInput
+          style={styles.input}
+          placeholder="Mês do Limite."
+          value={formatDate(mesReferencia)}
+          editable={false}
+          pointerEvents="none"
+        />
+      </TouchableOpacity>
+      {showDatePickerSave && (
+        <DateTimePicker
+          value={mesReferencia}
+          mode="date"
+          display="spinner"
+          onChange={onChangeSaveDate}
+        />
+      )}
 
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>
           {editingLimite ? "Atualizar" : "Salvar"}
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> 
 
       <Text style={styles.historyTitle}>Histórico</Text>
-      {/* Data para o histórico */}
       <TouchableOpacity
         style={styles.datepicker}
         onPress={() => setShowDatePickerHistory(true)}
@@ -275,52 +265,51 @@ const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEm
         />
       )}
 
-      <View></View>
-      {/* <TouchableOpacity style={styles.buttonPesquisa} onPress={handleSearch}>
+      <TouchableOpacity style={styles.button} onPress={handleSearch}>
         <Text style={styles.buttonText}>Pesquisar</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
-      {/* <ScrollView style={styles.scrollView}>
-        {limites.map((despesa, index) => (
-          <View key={index} style={styles.despesaItem}>
-            <Text style={styles.despesaText}>
-              Mês: {despesa.mes} - Valor: R${despesa.valor.toFixed(1)}
-            </Text>
-            <View style={styles.buttonsContainer}>
-              <TouchableOpacity
-                onPress={() => handleEdit(index)}
-                style={styles.buttonEdit}
-              >
-                <Text style={styles.buttonText}>Editar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleDelete(index)}
-                style={styles.buttonDelete}
-              >
-                <Text style={styles.buttonText}>Excluir</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-      </ScrollView> */}
+      <View></View>
       <FlatList
         data={limites}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text style={styles.emptyText}>Nenhum limite encontrado</Text> }
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>Nenhum limite encontrado</Text>
+        }
         renderItem={({ item }) => (
           <View style={styles.limiteItem}>
             <Text style={styles.limiteText}>{item.referenciaMes}</Text>
             <Text style={styles.limiteText}>R${item.valor}</Text>
-            <View style={styles.limitActions}>
+            <View style={styles.limiteActions}>
               <TouchableOpacity
                 onPress={() => handleEdit(item)}
-                style={styles.actionButton}
+                style={[
+                  styles.actionButton,
+                  mesReferenciaHistorico.toDateString >=
+                  new Date().getMonth().toString
+                    ? null
+                    : styles.disabledButton,
+                ]}
+                disabled={
+                  mesReferenciaHistorico.toDateString >=
+                  new Date().getMonth().toString
+                }
               >
                 <Text style={styles.actionButtonText}>✏️</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleDelete(Number(item.id))}
-                style={styles.actionButton}
+                style={[
+                  styles.actionButton,
+                  mesReferenciaHistorico.toDateString >=
+                  new Date().getMonth().toString
+                    ? null
+                    : styles.disabledButton,
+                ]}
+                disabled={
+                  mesReferenciaHistorico.toDateString >=
+                  new Date().getMonth().toString
+                }
               >
                 <Text style={styles.actionButtonText}>🗑️</Text>
               </TouchableOpacity>

@@ -110,7 +110,7 @@ export const getByMesReferenciaAndLogin = async (login: string, mesReferencia: D
       const response = await axiosInstance.get(`${API_URL}/por-mes-e-login/${mesReferencia}/${login}`);
       return response.data;
   } catch (error) {
-      throw new Error('Erro ao obter despesas por mes de referencia + login');
+      throw new Error('Erro ao obter os limites por mes de referencia + login');
   }
 }
 
