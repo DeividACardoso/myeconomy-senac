@@ -23,7 +23,7 @@ export const create = async (limiteData: any): Promise<any> => {
 
     return response.data;
   } catch (error) {
-    throw new Error(`Erro ao criar despesa. Erro: ${error.message}`);
+    throw new Error(`Erro ao criar o limite. Erro: ${error.message}`);
   }
 };
 
@@ -33,7 +33,7 @@ export const update = async (limiteId: number, limiteData: any): Promise<any> =>
     console.log("Atualizando pt2...", response.data)
     return response.data;
   } catch (error) {
-    throw new Error('Erro ao atualizar despesa');
+    throw new Error('Erro ao atualizar o limite');
   }
 }
 
@@ -48,12 +48,12 @@ export const remove = async (limiteId: number) => {
 }
 
 
-export const get = async (despesaId: string): Promise<any> => {
+export const get = async (limiteId: string): Promise<any> => {
   try {
-    const response = await axiosInstance.get(`${API_BASE_URL}/${despesaId}`);
+    const response = await axiosInstance.get(`${API_BASE_URL}/${limiteId}`);
     return response.data;
   } catch (error) {
-    throw new Error('Erro ao obter despesa');
+    throw new Error('Erro ao obter limite');
   }
 }
 
@@ -62,7 +62,7 @@ export const getByLogin = async (usuario_email: string): Promise<any[]> => {
     const response = await axiosInstance.get(`${API_BASE_URL}/${usuario_email}`);
     return response.data;
   } catch (error) {
-    throw new Error('Erro ao obter despesa por email');
+    throw new Error('Erro ao obter limite por email');
   }
 }
 
@@ -71,6 +71,6 @@ export const getByMesReferenciaAndLogin = async (login: string, mesReferencia: D
     const response = await axiosInstance.get(`${API_BASE_URL}/por-mes-e-login/${mesReferencia}/${login}`);
     return response.data;
   } catch (error) {
-    throw new Error('Erro ao obter despesas por mes de referencia + login');
+    throw new Error('Erro ao obter limites por mes de referencia + login');
   }
 }
