@@ -33,7 +33,6 @@ const DespesaScreen = () => {
     const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEmail) => {
         const despesasAtualizadas = await getByMesReferenciaAndLogin(userEmail, mesReferenciaHistorico.toISOString().split('T')[0]);
         setDespesas(despesasAtualizadas);
-        console.log('despesasAtualizadas:', despesasAtualizadas);
     };
 
     const handleSave = async () => {

@@ -1,45 +1,13 @@
-import axios from "axios";
-import axiosInstance from "../utils/RequestInterceptor";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from 'axios';
+import axiosInstance from '../utils/RequestInterceptor';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// const API_URL = "http://10.0.2.2:8080/api/limite-mes";
-const API_URL = "http://localhost:8080/api/limite-mes";
-
-export const progressoMes = async (mes: string) => {
-  try {
-    const response = await axiosInstance.get(`${API_URL}/progresso/${mes}`);
-    return response;
-  } catch (error) {
-    throw new Error("Erro ao buscar progresso do mês");
-  }
-};
-export const getLimites = async () => {
-  try {
-    const response = await axiosInstance.get(`${API_URL}/todos`);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar limites:", error);
-    throw error;
-  }
-};
-
-export const getLimiteByMes = async (mes: string) => {
-  try {
-    const response = await axiosInstance.get(`${API_URL}/mes/${mes}`);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar o limite por mes:", error);
-    throw error;
-  }
-};
+const API_BASE_URL = "http://10.0.2.2:8080/api/limite";
+// const API_BASE_URL = 'http://localhost:8080/api/despesas';
 
 export const create = async (limiteData: any): Promise<any> => {
   try {
-    console.log("limiteData:", limiteData);
-
     const { valor, referenciaMes } = limiteData;
-    console.log('limitData.referenciaMes:', referenciaMes);
-
     const usuarioEmail = await AsyncStorage.getItem('login');
     if (!usuarioEmail) {
       throw new Error('Login não encontrado em storage.');
@@ -48,69 +16,61 @@ export const create = async (limiteData: any): Promise<any> => {
     const body = {
       valor,
       referenciaMes,
-      usuarioEmail,
+      usuarioEmail: usuarioEmail,
     };
-    console.log("body.referenciaMes:", body.referenciaMes);
+    const response = await axiosInstance.post(`${API_BASE_URL}/salvar`, body);
+    console.log("criando pt2...", response.data)
 
-    const response = await axiosInstance.post(`${API_URL}/salvar`, body);
-    console.log("response.data:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error creating limit:", error);
-    throw new Error(`Erro ao criar limites. Erro: ${error.message}`);
+    throw new Error(`Erro ao criar despesa. Erro: ${error.message}`);
   }
 };
 
-export const updateLimite = async (
-  id: number,
-  limite: { valor: number; mes: string }
-) => {
+export const update = async (limiteId: number, limiteData: any): Promise<any> => {
   try {
-    const response = await axiosInstance.put(`${API_URL}/${id}`, limite);
+    const response = await axiosInstance.put(`${API_BASE_URL}/atualizar/${limiteId}`, limiteData);
+    console.log("Atualizando pt2...", response.data)
     return response.data;
   } catch (error) {
-    console.error("Erro atualizando limite:", error);
-    throw error;
-  }
-};
-
-export const update = async (limiteId: number, limiteDate: any): Promise<any> => {
-  try {
-      const response = await axiosInstance.put(`${API_URL}/atualizar/${limiteId}`, limiteDate);
-      return response.data;
-  } catch (error) {
-      throw new Error('Erro ao atualizar o limite');
+    throw new Error('Erro ao atualizar despesa');
   }
 }
-
-// export const deleteLimite = async (id: number) => {
-//   try {
-//     const response = await axiosInstance.delete(`${API_URL}/${id}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Erro deletando limite:", error);
-//     throw error;
-//   }
-// };
 
 export const remove = async (limiteId: number) => {
   try {
-    const response = await axiosInstance.delete(`${API_URL}/delete/${limiteId}`
-    );
+    const response = await axiosInstance.delete(`${API_BASE_URL}/delete/${limiteId}`,);
     return response.data;
   } catch (error) {
-    console.error("Error removing limit:", error.response || error.message);
-    throw new Error("Erro ao remover limite");
-  }
-};
-
-export const getByMesReferenciaAndLogin = async (login: string, mesReferencia: Date): Promise<any[]> => {
-  console.log('getByMesReferencia:', mesReferencia);
-  try {
-      const response = await axiosInstance.get(`${API_URL}/por-mes-e-login/${mesReferencia}/${login}`);
-      return response.data;
-  } catch (error) {
-      throw new Error('Erro ao obter os limites por mes de referencia + login');
+    console.error('Error removing limite:', error.response || error.message);
+    throw new Error('Erro ao remover limite');
   }
 }
 
+
+export const get = async (despesaId: string): Promise<any> => {
+  try {
+    const response = await axiosInstance.get(`${API_BASE_URL}/${despesaId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao obter despesa');
+  }
+}
+
+export const getByLogin = async (usuario_email: string): Promise<any[]> => {
+  try {
+    const response = await axiosInstance.get(`${API_BASE_URL}/${usuario_email}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao obter despesa por email');
+  }
+}
+
+export const getByMesReferenciaAndLogin = async (login: string, mesReferencia: Date): Promise<any[]> => {
+  try {
+    const response = await axiosInstance.get(`${API_BASE_URL}/por-mes-e-login/${mesReferencia}/${login}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Erro ao obter despesas por mes de referencia + login');
+  }
+}
