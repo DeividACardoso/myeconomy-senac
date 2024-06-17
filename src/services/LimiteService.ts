@@ -2,8 +2,8 @@ import axios from "axios";
 import axiosInstance from "../utils/RequestInterceptor";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// const API_URL = "http://10.0.2.2:8080/api/limite-mes";
-const API_URL = "http://localhost:8080/api/limite-mes";
+ const API_URL = "http://10.0.2.2:8080/api/limite-mes";
+//const API_URL = "http://localhost:8080/api/limite-mes";
 
 export const progressoMes = async (mes: string) => {
   try {

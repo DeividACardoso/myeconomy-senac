@@ -23,7 +23,6 @@ const DespesaScreen = () => {
 
     const initialize = async () => {
         const userEmail = await AsyncStorage.getItem('login');
-        console.log('userEmail:', userEmail);
         if (userEmail) {
             setEmail(userEmail);
             await fillDespesaListByLoginAndMonthYear(mesReferenciaHistorico, userEmail);
@@ -33,7 +32,6 @@ const DespesaScreen = () => {
     const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEmail) => {
         const despesasAtualizadas = await getByMesReferenciaAndLogin(userEmail, mesReferenciaHistorico.toISOString().split('T')[0]);
         setDespesas(despesasAtualizadas);
-        console.log('despesasAtualizadas:', despesasAtualizadas);
     };
 
     const handleSave = async () => {
@@ -131,9 +129,7 @@ const DespesaScreen = () => {
     const onChangeHistoryDate = (event, selectedDate) => {
         setShowDatePickerHistory(false);
         if (selectedDate) {
-            console.log('selectedDate no change:', selectedDate);
             selectedDate.setDate(1);
-            console.log('selectedDate date change:', selectedDate);
             setMesReferenciaHistorico(selectedDate);
         }
     };

@@ -1,4 +1,3 @@
-// AppProgressBar.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
@@ -10,7 +9,7 @@ const AppProgressBar = ({ despesa, limite, hasLimite, progressLevel }) => {
       <ProgressBar progress={progressLevel} color={'#4CAF50'} style={styles.progressBar} />
       {hasLimite && (
         <Text style={styles.text}>
-          Progresso: R${despesa.toFixed(2)}/R${limite.toFixed(2)}
+          Progresso: R${despesa.toFixed(2)} / R${limite.toFixed(2)}
         </Text>
       )}
     </View>
