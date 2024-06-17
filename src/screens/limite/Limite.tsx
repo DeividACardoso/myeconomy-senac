@@ -25,13 +25,13 @@ const LimiteScreen = () => {
     console.log('userEmail:', userEmail);
     if (userEmail) {
       setEmail(userEmail);
-      await fillDespesaListByLoginAndMonthYear(mesReferenciaHistorico, userEmail);
+      await fillLimiteListByLoginAndMonthYear(mesReferenciaHistorico, userEmail);
     }
   };
 
-  const fillDespesaListByLoginAndMonthYear = async (mesReferenciaHistorico, userEmail) => {
-    const despesasAtualizadas = await getByMesReferenciaAndLogin(userEmail, mesReferenciaHistorico.toISOString().split('T')[0]);
-    setLimites(despesasAtualizadas);
+  const fillLimiteListByLoginAndMonthYear = async (mesReferenciaHistorico, userEmail) => {
+    const limitesAtualizadas = await getByMesReferenciaAndLogin(userEmail, mesReferenciaHistorico.toISOString().split('T')[0]);
+    setLimites(limitesAtualizadas);
   };
 
   const handleSave = async () => {
@@ -73,7 +73,7 @@ const LimiteScreen = () => {
       }
       setValor('');
       setMesReferencia(new Date());
-      Alert.alert('Success', `Despesa ${editingLimites ? 'atualizada' : 'criada'} com sucesso.`);
+      Alert.alert('Success', `Limite ${editingLimites ? 'atualizada' : 'criada'} com sucesso.`);
     } catch (error) {
       console.error('Error creating/updating expense:', error);
       Alert.alert('Error', `Failed to ${editingLimites ? 'update' : 'create'} expense.`);
@@ -104,7 +104,7 @@ const LimiteScreen = () => {
         { cancelable: false }
       );
     } else {
-      Alert.alert('Error', 'Não é possível excluir despesas de meses anteriores.');
+      Alert.alert('Error', 'Não é possível excluir limites de meses anteriores.');
     }
   };
 
@@ -114,7 +114,7 @@ const LimiteScreen = () => {
       setValor(item.valor.toString());
       setMesReferencia(new Date(item.referenciaMes));
     } else {
-      Alert.alert('Error', 'Não é possível editar despesas de meses anteriores.');
+      Alert.alert('Error', 'Não é possível editar limites de meses anteriores.');
     }
   };
 
@@ -146,11 +146,10 @@ const LimiteScreen = () => {
         onChangeText={setValor}
         keyboardType="numeric"
       />
-      {/* Data para salvar */}
       <TouchableOpacity style={styles.datepicker} onPress={() => setShowDatePickerSave(true)}>
         <TextInput
           style={styles.input}
-          placeholder="Mês da despesa."
+          placeholder="Mês do limite."
           value={formatDate(mesReferencia)}
           editable={false}
           pointerEvents="none"
@@ -167,7 +166,6 @@ const LimiteScreen = () => {
         <Text style={styles.saveButtonText}>{editingLimites ? 'ATUALIZAR' : 'SALVAR'}</Text>
       </TouchableOpacity>
       <Text style={styles.historyTitle}>Histórico</Text>
-      {/* Data para o histórico */}
       <TouchableOpacity style={styles.datepicker} onPress={() => setShowDatePickerHistory(true)}>
         <TextInput
           style={styles.input}
