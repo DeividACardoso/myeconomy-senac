@@ -3,7 +3,7 @@ import axiosInstance from '../utils/RequestInterceptor';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_BASE_URL = "http://10.0.2.2:8080/api/limite";
-// const API_BASE_URL = 'http://localhost:8080/api/despesas';
+// const API_BASE_URL = 'http://localhost:8080/api/limite';
 
 export const create = async (limiteData: any): Promise<any> => {
   try {

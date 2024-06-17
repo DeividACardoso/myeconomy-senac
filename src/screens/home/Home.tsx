@@ -4,7 +4,6 @@ import AppCard from "../../components/appCard/AppCard";
 import AppHeaderHome from "../../components/appHeaderHome/AppHeaderHome";
 import AppProgressBar from "../../components/appProgressBar/AppProgressBar";
 import AppTextFormDate from "../../components/appTextForm/AppTextFormDate";
-// import { progressoMes } from "../../services/LimitService";
 import { progressoMes } from "../../services/LimiteService";
 import { formatDate } from "../../utils/DateFormatter";
 import { styles } from "./HomeStyle";
@@ -17,7 +16,7 @@ export default function Home({ navigation }) {
   const [limite, setLimite] = useState(0);
   const [despesa, setDespesa] = useState(0);
   const [progresso, setProgresso] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);  
   const [hasLimite, setHasLimite] = useState(true);
 
   const onRefresh = () => {
@@ -31,6 +30,7 @@ export default function Home({ navigation }) {
     await progressoMes(mes)
       .then((response) => {
         if (response.data != null) {
+          setHasLimite(true);
           setDespesa(response.data.gasto);
           setLimite(response.data.limite);
           setProgresso(response.data.progresso);
@@ -46,25 +46,17 @@ export default function Home({ navigation }) {
       });
   }
 
-  useEffect(() => {
-    const retrieveNome = async () => {
-      try {
-        const value = await AsyncStorage.getItem('nome');
-        if (value) {
-          setNome(value);
-        }
-      } catch (error) {
-        console.error('Erro: resgatando do AsyncStorage', error);
-      }
-    };
-
-    retrieveNome();
+   useEffect(() => {
+    AsyncStorage.getItem('nome')
+      .then(nome => setNome(nome));
+    fetchProgresso(date);
   }, []);
 
   const handleChangeDate = (data: Date) => {
     setDate(data)
     fetchProgresso(data)
   }
+
 
   return (
     <View style={styles.container}>

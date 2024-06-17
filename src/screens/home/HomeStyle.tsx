@@ -3,22 +3,25 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f2f2f2',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
-  actions: {
-    width: "100%",
-    alignItems: "center",
-    gap: 6,
+  feedbackContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  link: {
-    marginTop: 14,
+  summaryContainer: {
+    marginBottom: 20,
   },
-  buttons: {
-    backgroundColor: '#D6A72D',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 4,
-    marginBottom: 16,
+  button: {
+    backgroundColor: '#DDDDDD',
+    padding: 10,
+    borderRadius: 5,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
   },
 });
