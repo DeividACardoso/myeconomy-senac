@@ -82,3 +82,12 @@ export const getByMesReferenciaAndLogin = async (login: string, mesReferencia: D
         throw new Error('Erro ao obter despesas por mes de referencia + login');
     }
 }
+
+export const progressoMes = async (login: string, mesReferencia: Date): Promise<any[]> => {
+    try {
+      const response = await axiosInstance.get(`${API_BASE_URL}/soma-por-mes/${mesReferencia}/${login}`);
+      return response.data;
+    } catch (error) {
+      throw new Error('Erro ao obter o progresso pelo mês de referência');
+    }
+  }

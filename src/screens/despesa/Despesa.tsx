@@ -43,7 +43,7 @@ const DespesaScreen = () => {
         const mesAtual = new Date().getMonth();
         const mesSelecionado = mesReferencia.getMonth();
 
-        if (mesSelecionado > mesAtual) {
+        if (mesSelecionado < mesAtual) {
             Alert.alert('Error', 'Não é possível adicionar despesas em meses anteriores.');
             return;
         }
